@@ -1,11 +1,11 @@
 <div class="container">
   <section class="header-section">
-    <h2>Total Monthly Cost: {{ getTotalCost() | currency }}</h2>
+    <h2>Total Monthly Cost: {{ $totalCost() | currency }}</h2>
     <button matButton="filled">+ Add Subscription</button>
   </section>
 
   <section class="subscription-grid">
-    @for (subscription of subscriptions; track subscription.id) {
+    @for (subscription of $subscriptions(); track subscription.id) {
       <mat-card appearance="raised">
         <mat-card-header>
           <mat-card-title>{{ subscription.serviceName }}</mat-card-title>
