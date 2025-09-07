@@ -1,0 +1,18 @@
+<div class="subscription-grid">
+  @for (subscription of subscriptions; track subscription.id) {
+    <mat-card appearance="filled">
+      <mat-card-header>
+        <mat-card-title>{{ subscription.serviceName }}</mat-card-title>
+        <mat-card-subtitle>{{ subscription.cost | currency }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Next payment date: {{ subscription.nextPaymentDate | date: 'dd-MM-yyyy' }}</p>
+      </mat-card-content>
+      <mat-card-actions class="card-actions">
+        <button matButton="filled">Edit</button>
+        <button matButton="filled" class="error-button">Delete</button>
+      </mat-card-actions>
+
+    </mat-card>
+  }
+</div>
