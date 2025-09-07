@@ -48,4 +48,8 @@ export class SubscriptionList {
       billingCycle: 'yearly',
     },
   ];
+
+  getTotalCost(): number {
+    return this.subscriptions.reduce((total, subscription) => total + subscription.cost, 0);
+  }
 }
