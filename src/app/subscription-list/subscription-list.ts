@@ -6,6 +6,7 @@ import {SubscriptionsData} from '../subscriptions-data';
 import {MatDialog} from '@angular/material/dialog';
 import {DeleteSubscriptionDialog} from '../delete-subscription-dialog/delete-subscription-dialog';
 import {UpdateSubscriptionDialog} from '../update-subscription-dialog/update-subscription-dialog';
+import {CreateSubscriptionDialog} from '../create-subscription-dialog/create-subscription-dialog';
 
 @Component({
   selector: 'app-subscription-list',
@@ -25,5 +26,9 @@ export class SubscriptionList {
 
   updateSubscription(id: string): void {
     this.dialog.open(UpdateSubscriptionDialog);
+  }
+
+  createSubscription(): void {
+    this.dialog.open(CreateSubscriptionDialog);
   }
 }

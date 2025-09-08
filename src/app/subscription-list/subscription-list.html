@@ -1,7 +1,7 @@
 <div class="container">
   <section class="header-section">
     <h2>Total Monthly Cost: {{ $totalCost() | currency }}</h2>
-    <button matButton="filled">+ Add Subscription</button>
+    <button matButton="filled" (click)="createSubscription()">+ Add Subscription</button>
   </section>
 
   <section class="subscription-grid">
