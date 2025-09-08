@@ -3,6 +3,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { SubscriptionsData } from '../subscriptions-data';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
 
 @Component({
   selector: 'app-subscription-list',
@@ -12,6 +14,11 @@ import { SubscriptionsData } from '../subscriptions-data';
 })
 export class SubscriptionList {
   private readonly subscriptionsData = inject(SubscriptionsData);
+  private readonly dialog = inject(MatDialog);
   readonly $subscriptions = this.subscriptionsData.$subscriptions;
   readonly $totalCost = this.subscriptionsData.$totalCost;
+
+  deleteSubscription(id: string): void {
+    this.dialog.open(DeleteSubscriptionDialog);
+  }
 }
