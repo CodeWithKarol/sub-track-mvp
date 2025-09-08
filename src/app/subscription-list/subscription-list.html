@@ -15,7 +15,7 @@
           <h3>Next payment date: {{ subscription.nextPaymentDate | date: 'dd-MM-yyyy' }}</h3>
         </mat-card-content>
         <mat-card-actions class="card-actions">
-          <button matButton="filled">Edit</button>
+          <button matButton="filled" (click)="updateSubscription(subscription.id)">Edit</button>
           <button matButton="filled" class="error-button" (click)="deleteSubscription(subscription.id)">Delete</button>
         </mat-card-actions>
       </mat-card>

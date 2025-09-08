@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { SubscriptionsData } from '../subscriptions-data';
-import { MatDialog } from '@angular/material/dialog';
-import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
+import {Component, inject} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {CurrencyPipe, DatePipe} from '@angular/common';
+import {SubscriptionsData} from '../subscriptions-data';
+import {MatDialog} from '@angular/material/dialog';
+import {DeleteSubscriptionDialog} from '../delete-subscription-dialog/delete-subscription-dialog';
+import {UpdateSubscriptionDialog} from '../update-subscription-dialog/update-subscription-dialog';
 
 @Component({
   selector: 'app-subscription-list',
@@ -20,5 +21,9 @@ export class SubscriptionList {
 
   deleteSubscription(id: string): void {
     this.dialog.open(DeleteSubscriptionDialog);
+  }
+
+  updateSubscription(id: string): void {
+    this.dialog.open(UpdateSubscriptionDialog);
   }
 }
