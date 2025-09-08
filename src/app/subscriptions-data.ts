@@ -55,8 +55,9 @@ export class SubscriptionsData {
     const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     return daysUntilDue <= 14;
   }
-
-  $numOfDueSubscriptions = computed(() => {
-    return this.$subscriptions().filter((subscription) => this.isNearDue(subscription)).length;
+  $dueSubscriptions = computed(() => {
+    return this.$subscriptions().filter((subscription) => this.isNearDue(subscription));
   });
+
+  $numOfDueSubscriptions = computed(() => this.$dueSubscriptions().length);
 }
