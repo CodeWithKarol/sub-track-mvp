@@ -5,10 +5,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { SubscriptionsData } from '../subscriptions-data';
 import { MatMenuModule } from '@angular/material/menu';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatBadgeModule, MatMenuModule],
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatMenuModule,
+    DatePipe,
+    CurrencyPipe,
+  ],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

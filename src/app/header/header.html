@@ -4,12 +4,18 @@
   </button>
   <span>SubTrack</span>
   <span class="example-spacer"></span>
-  <button matIconButton>
-    <mat-icon [matBadge]="$numOfDueSubscriptions()" [matMenuTriggerFor]="menu">notifications</mat-icon>
+  <button matIconButton [disabled]="$numOfDueSubscriptions() === 0">
+    <mat-icon [matBadge]="$numOfDueSubscriptions()" [matMenuTriggerFor]="menu"
+      >notifications</mat-icon
+    >
   </button>
   <mat-menu #menu="matMenu">
     @for (subscription of $dueSubscriptions(); track subscription.id) {
-      <button mat-menu-item>{{ subscription.serviceName }}</button>
+      <button mat-menu-item>
+        {{
+          `Upcoming payment: ${subscription.serviceName} on ${(subscription.nextPaymentDate | date: 'shortDate')} for ${(subscription.cost | currency)}.`
+        }}
+      </button>
     }
   </mat-menu>
 </mat-toolbar>
