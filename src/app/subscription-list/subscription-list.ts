@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
 import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-subscription-dialog';
 import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
+import { filter, take, tap } from 'rxjs';
+import { Subscription } from '../subscription.model';
 
 @Component({
   selector: 'app-subscription-list',
@@ -29,6 +31,14 @@ export class SubscriptionList {
   }
 
   createSubscription(): void {
-    this.dialog.open(CreateSubscriptionDialog);
+    this.dialog
+      .open(CreateSubscriptionDialog)
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter((result): result is Omit<Subscription, 'id'> => !!result),
+        tap((result) => this.subscriptionsData.addSubscription(result)),
+      )
+      .subscribe();
   }
 }

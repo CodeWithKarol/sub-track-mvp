@@ -60,4 +60,27 @@ export class SubscriptionsData {
   });
 
   $numOfDueSubscriptions = computed(() => this.$dueSubscriptions().length);
+
+  addSubscription(subscription: Omit<Subscription, 'id'>): void {
+    const subscriptionWithId: Subscription = {
+      ...subscription,
+      id: `sub${Math.random().toString(36).substring(2, 9)}`,
+    };
+
+    this.$subscriptions.update((subscriptions) => [...subscriptions, subscriptionWithId]);
+  }
+
+  removeSubscription(id: string): void {
+    this.$subscriptions.update((subscriptions) =>
+      subscriptions.filter((subscription) => subscription.id !== id),
+    );
+  }
+
+  updateSubscription(updatedSubscription: Subscription): void {
+    this.$subscriptions.update((subscriptions) =>
+      subscriptions.map((subscription) =>
+        subscription.id === updatedSubscription.id ? updatedSubscription : subscription,
+      ),
+    );
+  }
 }
