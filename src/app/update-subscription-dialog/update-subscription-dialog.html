@@ -1,1 +1,36 @@
-<p>update-subscription-dialog works!</p>
+<h2 mat-dialog-title>Update Subscription</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Service Name</mat-label>
+      <input matInput formControlName="serviceName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Cost</mat-label>
+      <input matInput formControlName="cost" type="number" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="nextPaymentDate" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Billing Cycle</mat-label>
+      <mat-select [(value)]="selectedBillingCycle" formControlName="billingCycle">
+        <mat-option></mat-option>
+        @for (option of billingCycles; track option) {
+          <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="confirmUpdate()">Update</button>
+  <button matButton mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

@@ -36,8 +36,22 @@ export class SubscriptionList {
       .subscribe();
   }
 
-  updateSubscription(id: string): void {
-    this.dialog.open(UpdateSubscriptionDialog);
+  updateSubscription(subsciption: Subscription): void {
+    this.dialog
+      .open(UpdateSubscriptionDialog, {
+        data: {
+          ...subsciption,
+        },
+      })
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter((result): result is Omit<Subscription, 'id'> => !!result),
+        tap((result) =>
+          this.subscriptionsData.updateSubscription({ id: subsciption.id, ...result }),
+        ),
+      )
+      .subscribe();
   }
 
   createSubscription(): void {
