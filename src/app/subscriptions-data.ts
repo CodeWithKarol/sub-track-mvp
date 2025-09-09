@@ -1,10 +1,12 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Subscription } from './subscription.model';
+import { LocalStorageApi } from './local-storage-api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SubscriptionsData {
+  private readonly localStorageApi = inject(LocalStorageApi);
   $subscriptions = signal<Subscription[]>([
     {
       id: 'sub1',
@@ -68,12 +70,18 @@ export class SubscriptionsData {
     };
 
     this.$subscriptions.update((subscriptions) => [...subscriptions, subscriptionWithId]);
+
+    // Save to local storage
+    this.localStorageApi.setItems('subscriptions', this.$subscriptions());
   }
 
   removeSubscription(id: string): void {
     this.$subscriptions.update((subscriptions) =>
       subscriptions.filter((subscription) => subscription.id !== id),
     );
+
+    // Save to local storage
+    this.localStorageApi.setItems('subscriptions', this.$subscriptions());
   }
 
   updateSubscription(updatedSubscription: Subscription): void {
@@ -82,5 +90,8 @@ export class SubscriptionsData {
         subscription.id === updatedSubscription.id ? updatedSubscription : subscription,
       ),
     );
+
+    // Save to local storage
+    this.localStorageApi.setItems('subscriptions', this.$subscriptions());
   }
 }

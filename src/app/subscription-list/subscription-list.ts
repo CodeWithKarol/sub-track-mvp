@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -9,6 +9,7 @@ import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-s
 import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
 import { filter, take, tap } from 'rxjs';
 import { Subscription } from '../subscription.model';
+import { LocalStorageApi } from '../local-storage-api';
 
 @Component({
   selector: 'app-subscription-list',
@@ -16,11 +17,18 @@ import { Subscription } from '../subscription.model';
   templateUrl: './subscription-list.html',
   styleUrl: './subscription-list.scss',
 })
-export class SubscriptionList {
+export class SubscriptionList implements OnInit {
   private readonly subscriptionsData = inject(SubscriptionsData);
+  private readonly localStorageApi = inject(LocalStorageApi);
   private readonly dialog = inject(MatDialog);
   readonly $subscriptions = this.subscriptionsData.$subscriptions;
   readonly $totalCost = this.subscriptionsData.$totalCost;
+
+  ngOnInit(): void {
+    // Load subscriptions from local storage on initialization
+    const storedSubscriptions = this.localStorageApi.getItems<Subscription>('subscriptions');
+    this.subscriptionsData.$subscriptions.set(storedSubscriptions);
+  }
 
   deleteSubscription({ id, serviceName }: Subscription): void {
     this.dialog
