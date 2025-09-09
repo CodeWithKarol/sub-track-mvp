@@ -1,1 +1,11 @@
-<p>delete-subscription-dialog works!</p>
+<h2 mat-dialog-title>Confirm Deletion</h2>
+<mat-dialog-content>
+  <p>
+    Are you sure you want to delete the subscription to <b>{{ serviceName() }}</b
+    >? This action cannot be undone.
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="confirmDeletion()">Delete</button>
+  <button matButton mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

@@ -22,8 +22,18 @@ export class SubscriptionList {
   readonly $subscriptions = this.subscriptionsData.$subscriptions;
   readonly $totalCost = this.subscriptionsData.$totalCost;
 
-  deleteSubscription(id: string): void {
-    this.dialog.open(DeleteSubscriptionDialog);
+  deleteSubscription({ id, serviceName }: Subscription): void {
+    this.dialog
+      .open(DeleteSubscriptionDialog, {
+        data: { serviceName },
+      })
+      .afterClosed()
+      .pipe(
+        take(1),
+        filter((confirmed) => !!confirmed),
+        tap(() => this.subscriptionsData.removeSubscription(id)),
+      )
+      .subscribe();
   }
 
   updateSubscription(id: string): void {
