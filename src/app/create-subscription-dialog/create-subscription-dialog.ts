@@ -31,8 +31,16 @@ export class CreateSubscriptionDialog {
     cost: [0, [Validators.required, Validators.min(0)]],
     nextPaymentDate: [new Date(), Validators.required],
     billingCycle: ['monthly', Validators.required],
+    category: ['Entertainment', Validators.required],
   });
   protected selectedBillingCycle = signal('monthly');
+  protected selectedCategory = signal('Entertainment');
+  protected readonly categories = [
+    { value: 'Entertainment', viewValue: 'Entertainment' },
+    { value: 'Music', viewValue: 'Music' },
+    { value: 'Productivity', viewValue: 'Productivity' },
+    { value: 'Shopping', viewValue: 'Shopping' },
+  ];
   protected billingCycles = [
     { value: 'monthly', viewValue: 'Monthly' },
     { value: 'yearly', viewValue: 'Yearly' },
