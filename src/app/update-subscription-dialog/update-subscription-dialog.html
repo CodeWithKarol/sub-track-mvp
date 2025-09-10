@@ -3,17 +3,17 @@
   <form [formGroup]="form">
     <mat-form-field appearance="outline">
       <mat-label>Service Name</mat-label>
-      <input matInput formControlName="serviceName" />
+      <input matInput formControlName="serviceName"/>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Cost</mat-label>
-      <input matInput formControlName="cost" type="number" />
+      <input matInput formControlName="cost" type="number"/>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Choose a date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="nextPaymentDate" />
+      <input matInput [matDatepicker]="picker" formControlName="nextPaymentDate"/>
       <mat-hint>MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -24,6 +24,16 @@
       <mat-select [(value)]="selectedBillingCycle" formControlName="billingCycle">
         <mat-option></mat-option>
         @for (option of billingCycles; track option) {
+          <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Category</mat-label>
+      <mat-select [(value)]="selectedCategory" formControlName="category">
+        <mat-option></mat-option>
+        @for (option of categories; track option) {
           <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
         }
       </mat-select>

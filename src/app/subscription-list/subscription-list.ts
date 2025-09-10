@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { SubscriptionsData } from '../subscriptions-data';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
@@ -12,7 +12,7 @@ import { Subscription } from '../subscription.model';
 
 @Component({
   selector: 'app-subscription-list',
-  imports: [MatCardModule, MatButtonModule, CurrencyPipe, DatePipe],
+  imports: [MatCardModule, MatButtonModule, CurrencyPipe, DatePipe, TitleCasePipe],
   templateUrl: './subscription-list.html',
   styleUrl: './subscription-list.scss',
 })

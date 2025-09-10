@@ -31,12 +31,20 @@ export class UpdateSubscriptionDialog {
     { value: 'monthly', viewValue: 'Monthly' },
     { value: 'yearly', viewValue: 'Yearly' },
   ];
-  protected readonly selectedBillingCycle = signal(this.data?.billingCycle ?? 'monthly');
-  form = this.fb.group({
+  protected selectedBillingCycle = signal(this.data?.billingCycle ?? 'monthly');
+  protected selectedCategory = signal(this.data?.category ?? 'Entertainment');
+  protected readonly categories = [
+    { value: 'Entertainment', viewValue: 'Entertainment' },
+    { value: 'Music', viewValue: 'Music' },
+    { value: 'Productivity', viewValue: 'Productivity' },
+    { value: 'Shopping', viewValue: 'Shopping' },
+  ];
+  protected form = this.fb.group({
     serviceName: [this.data?.serviceName, Validators.required],
     cost: [this.data?.cost, [Validators.required, Validators.min(0)]],
     nextPaymentDate: [new Date(this.data?.nextPaymentDate), Validators.required],
     billingCycle: [this.data?.billingCycle, Validators.required],
+    category: [this.data?.category, Validators.required],
   });
 
   confirmUpdate(): void {

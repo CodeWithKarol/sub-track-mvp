@@ -16,7 +16,9 @@
           <mat-card-subtitle>{{ subscription.cost | currency }}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <h3>Next payment date: {{ subscription.nextPaymentDate | date: 'shortDate' }}</h3>
+          <p>Next payment date: <b>{{ subscription.nextPaymentDate | date: 'shortDate' }}</b></p>
+          <p>Billing cycle: <b>{{ subscription.billingCycle | titlecase }}</b></p>
+          <p>Category: <b>{{ subscription.category }}</b></p>
         </mat-card-content>
         <mat-card-actions class="card-actions">
           <button matButton="filled" (click)="updateSubscription(subscription)">Edit</button>
