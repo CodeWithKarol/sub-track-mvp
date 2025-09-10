@@ -1,18 +1,34 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { CurrencyPipe, DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { SubscriptionsData } from '../subscriptions-data';
-import { MatDialog } from '@angular/material/dialog';
-import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
-import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-subscription-dialog';
-import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
-import { filter, take, tap } from 'rxjs';
-import { Subscription } from '../subscription.model';
+import {Component, computed, inject, OnInit} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {CurrencyPipe, DatePipe, TitleCasePipe} from '@angular/common';
+import {SubscriptionsData} from '../subscriptions-data';
+import {MatDialog} from '@angular/material/dialog';
+import {DeleteSubscriptionDialog} from '../delete-subscription-dialog/delete-subscription-dialog';
+import {UpdateSubscriptionDialog} from '../update-subscription-dialog/update-subscription-dialog';
+import {CreateSubscriptionDialog} from '../create-subscription-dialog/create-subscription-dialog';
+import {filter, take, tap} from 'rxjs';
+import {Subscription} from '../subscription.model';
+import {ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexTooltip, NgApexchartsModule,} from 'ng-apexcharts';
+
+type PieChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  labels: any;
+  tooltip: ApexTooltip;
+};
 
 @Component({
   selector: 'app-subscription-list',
-  imports: [MatCardModule, MatButtonModule, CurrencyPipe, DatePipe, TitleCasePipe],
+  imports: [
+    MatCardModule,
+    MatButtonModule,
+    CurrencyPipe,
+    DatePipe,
+    TitleCasePipe,
+    NgApexchartsModule,
+  ],
   templateUrl: './subscription-list.html',
   styleUrl: './subscription-list.scss',
 })
@@ -21,6 +37,50 @@ export class SubscriptionList implements OnInit {
   private readonly dialog = inject(MatDialog);
   protected $subscriptions = this.subscriptionsData.$subscriptions;
   protected $totalCost = this.subscriptionsData.$totalCost;
+  // Computed property to group and sum costs by category
+  protected categoryData = computed(() => {
+    const subscriptions = this.$subscriptions();
+    const categoryMap = new Map<string, number>();
+
+    // Group by category and sum costs
+    subscriptions.forEach((sub) => {
+      const currentSum = categoryMap.get(sub.category) || 0;
+      categoryMap.set(sub.category, currentSum + sub.cost);
+    });
+
+    return {
+      labels: Array.from(categoryMap.keys()),
+      series: Array.from(categoryMap.values()),
+    };
+  });
+  protected pieChartOptions: PieChartOptions = {
+    series: this.categoryData().series,
+    chart: {
+      width: 380,
+      type: 'pie',
+    },
+    labels: this.categoryData().labels,
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: 'bottom',
+          },
+        },
+      },
+    ],
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return `$${val.toFixed(2)}`;
+        },
+      },
+    },
+  };
 
   ngOnInit(): void {
     this.subscriptionsData.loadInitialData();

@@ -41,6 +41,14 @@
 <section>
   <h1>Spending Overview</h1>
 
-  <section></section>
+  <section>
+    <apx-chart
+      [series]="categoryData().series"
+      [chart]="pieChartOptions.chart"
+      [labels]="categoryData().labels"
+      [responsive]="pieChartOptions.responsive"
+      [tooltip]="pieChartOptions.tooltip"
+    ></apx-chart>
+  </section>
 </section>
 
