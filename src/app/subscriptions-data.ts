@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Subscription } from './subscription.model';
 import { LocalStorageApi } from './local-storage-api';
+import { Subscription } from './subscription.model';
 
 const initialSubscriptions: Subscription[] = [
   {
@@ -9,6 +9,7 @@ const initialSubscriptions: Subscription[] = [
     cost: 12.99,
     nextPaymentDate: new Date('2025-09-15'),
     billingCycle: 'monthly',
+    category: 'Entertainment',
   },
   {
     id: 'sub2',
@@ -16,6 +17,7 @@ const initialSubscriptions: Subscription[] = [
     cost: 9.99,
     nextPaymentDate: new Date('2025-09-20'),
     billingCycle: 'monthly',
+    category: 'Music',
   },
   {
     id: 'sub3',
@@ -23,6 +25,7 @@ const initialSubscriptions: Subscription[] = [
     cost: 52.99,
     nextPaymentDate: new Date('2025-10-01'),
     billingCycle: 'monthly',
+    category: 'Productivity',
   },
   {
     id: 'sub4',
@@ -30,6 +33,7 @@ const initialSubscriptions: Subscription[] = [
     cost: 139.0,
     nextPaymentDate: new Date('2026-01-05'),
     billingCycle: 'yearly',
+    category: 'Shopping',
   },
   {
     id: 'sub5',
@@ -37,6 +41,7 @@ const initialSubscriptions: Subscription[] = [
     cost: 69.99,
     nextPaymentDate: new Date('2025-12-10'),
     billingCycle: 'yearly',
+    category: 'Productivity',
   },
 ];
 

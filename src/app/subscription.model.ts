@@ -1,7 +1,21 @@
 export interface Subscription {
-  id: string; // Unique identifier
-  serviceName: string; // Name of the subscription service
-  cost: number; // Subscription cost
-  nextPaymentDate: Date; // Date of next payment due
-  billingCycle: 'monthly' | 'yearly'; // Simplified billing cycle options
+  id: string;
+  serviceName: string;
+  cost: number;
+  nextPaymentDate: Date;
+  billingCycle: BillingCycle;
+  category: SubscriptionCategory;
 }
+
+export type SubscriptionCategory = 'Entertainment' | 'Music' | 'Productivity' | 'Shopping';
+
+export type BillingCycle = 'monthly' | 'yearly';
+
+export const subscriptionCategories: SubscriptionCategory[] = [
+  'Entertainment',
+  'Music',
+  'Productivity',
+  'Shopping',
+];
+
+export const billingCycles: BillingCycle[] = ['monthly', 'yearly'] as const;
