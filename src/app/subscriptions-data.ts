@@ -2,54 +2,65 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Subscription } from './subscription.model';
 import { LocalStorageApi } from './local-storage-api';
 
+const initialSubscriptions: Subscription[] = [
+  {
+    id: 'sub1',
+    serviceName: 'Netflix',
+    cost: 12.99,
+    nextPaymentDate: new Date('2025-09-15'),
+    billingCycle: 'monthly',
+  },
+  {
+    id: 'sub2',
+    serviceName: 'Spotify',
+    cost: 9.99,
+    nextPaymentDate: new Date('2025-09-20'),
+    billingCycle: 'monthly',
+  },
+  {
+    id: 'sub3',
+    serviceName: 'Adobe Creative Cloud',
+    cost: 52.99,
+    nextPaymentDate: new Date('2025-10-01'),
+    billingCycle: 'monthly',
+  },
+  {
+    id: 'sub4',
+    serviceName: 'Amazon Prime',
+    cost: 139.0,
+    nextPaymentDate: new Date('2026-01-05'),
+    billingCycle: 'yearly',
+  },
+  {
+    id: 'sub5',
+    serviceName: 'Microsoft 365',
+    cost: 69.99,
+    nextPaymentDate: new Date('2025-12-10'),
+    billingCycle: 'yearly',
+  },
+];
+
 @Injectable({
   providedIn: 'root',
 })
 export class SubscriptionsData {
   private readonly localStorageApi = inject(LocalStorageApi);
-  $subscriptions = signal<Subscription[]>([
-    {
-      id: 'sub1',
-      serviceName: 'Netflix',
-      cost: 12.99,
-      nextPaymentDate: new Date('2025-09-15'),
-      billingCycle: 'monthly',
-    },
-    {
-      id: 'sub2',
-      serviceName: 'Spotify',
-      cost: 9.99,
-      nextPaymentDate: new Date('2025-09-20'),
-      billingCycle: 'monthly',
-    },
-    {
-      id: 'sub3',
-      serviceName: 'Adobe Creative Cloud',
-      cost: 52.99,
-      nextPaymentDate: new Date('2025-10-01'),
-      billingCycle: 'monthly',
-    },
-    {
-      id: 'sub4',
-      serviceName: 'Amazon Prime',
-      cost: 139.0,
-      nextPaymentDate: new Date('2026-01-05'),
-      billingCycle: 'yearly',
-    },
-    {
-      id: 'sub5',
-      serviceName: 'Microsoft 365',
-      cost: 69.99,
-      nextPaymentDate: new Date('2025-12-10'),
-      billingCycle: 'yearly',
-    },
-  ]);
-
+  $subscriptions = signal<Subscription[]>([]);
   $totalCost = computed(() => {
     return this.$subscriptions().reduce((total, subscription) => {
       return total + subscription.cost;
     }, 0);
   });
+
+  loadInitialData(): void {
+    const storedSubscriptions = this.localStorageApi.getItems<Subscription>('subscriptions');
+
+    if (storedSubscriptions.length > 0) {
+      this.$subscriptions.set(storedSubscriptions);
+    } else {
+      this.$subscriptions.set(initialSubscriptions);
+    }
+  }
 
   isNearDue(subscription: Subscription): boolean {
     const today = new Date();

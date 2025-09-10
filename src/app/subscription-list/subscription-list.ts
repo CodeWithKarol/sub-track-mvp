@@ -1,15 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { SubscriptionsData } from '../subscriptions-data';
-import { MatDialog } from '@angular/material/dialog';
-import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
-import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-subscription-dialog';
-import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
-import { filter, take, tap } from 'rxjs';
-import { Subscription } from '../subscription.model';
-import { LocalStorageApi } from '../local-storage-api';
+import {Component, inject, OnInit} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {CurrencyPipe, DatePipe} from '@angular/common';
+import {SubscriptionsData} from '../subscriptions-data';
+import {MatDialog} from '@angular/material/dialog';
+import {DeleteSubscriptionDialog} from '../delete-subscription-dialog/delete-subscription-dialog';
+import {UpdateSubscriptionDialog} from '../update-subscription-dialog/update-subscription-dialog';
+import {CreateSubscriptionDialog} from '../create-subscription-dialog/create-subscription-dialog';
+import {filter, take, tap} from 'rxjs';
+import {Subscription} from '../subscription.model';
 
 @Component({
   selector: 'app-subscription-list',
@@ -19,15 +18,12 @@ import { LocalStorageApi } from '../local-storage-api';
 })
 export class SubscriptionList implements OnInit {
   private readonly subscriptionsData = inject(SubscriptionsData);
-  private readonly localStorageApi = inject(LocalStorageApi);
   private readonly dialog = inject(MatDialog);
-  readonly $subscriptions = this.subscriptionsData.$subscriptions;
-  readonly $totalCost = this.subscriptionsData.$totalCost;
+  protected $subscriptions = this.subscriptionsData.$subscriptions;
+  protected $totalCost = this.subscriptionsData.$totalCost;
 
   ngOnInit(): void {
-    // Load subscriptions from local storage on initialization
-    const storedSubscriptions = this.localStorageApi.getItems<Subscription>('subscriptions');
-    this.subscriptionsData.$subscriptions.set(storedSubscriptions);
+    this.subscriptionsData.loadInitialData();
   }
 
   deleteSubscription({ id, serviceName }: Subscription): void {
@@ -44,11 +40,11 @@ export class SubscriptionList implements OnInit {
       .subscribe();
   }
 
-  updateSubscription(subsciption: Subscription): void {
+  updateSubscription(subscription: Subscription): void {
     this.dialog
       .open(UpdateSubscriptionDialog, {
         data: {
-          ...subsciption,
+          ...subscription,
         },
       })
       .afterClosed()
@@ -56,7 +52,7 @@ export class SubscriptionList implements OnInit {
         take(1),
         filter((result): result is Omit<Subscription, 'id'> => !!result),
         tap((result) =>
-          this.subscriptionsData.updateSubscription({ id: subsciption.id, ...result }),
+          this.subscriptionsData.updateSubscription({ id: subscription.id, ...result }),
         ),
       )
       .subscribe();
