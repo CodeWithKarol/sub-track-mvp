@@ -1,10 +1,14 @@
-<div class="container">
-  <section class="header-section">
-    <h2>Total Monthly Cost: {{ $totalCost() | currency }}</h2>
-    <button matButton="filled" (click)="createSubscription()">+ Add Subscription</button>
-  </section>
+<section class="subscription-list-container">
+  <div>
+    <h1>Your Subscriptions</h1>
 
-  <section class="subscription-grid">
+    <section class="summary">
+      <p>Total Monthly Cost: <b>{{ $totalCost() | currency }}</b></p>
+      <button matButton="filled" (click)="createSubscription()">+ Add Subscription</button>
+    </section>
+  </div>
+
+  <section class="subscription-list">
     @for (subscription of $subscriptions(); track subscription.id) {
       <mat-card appearance="raised">
         <mat-card-header>
@@ -25,6 +29,16 @@
           </button>
         </mat-card-actions>
       </mat-card>
+    } @empty {
+      <p>No subscriptions found. Add a new subscription to get started!</p>
     }
   </section>
-</div>
+</section>
+
+
+<section>
+  <h1>Spending Overview</h1>
+
+  <section></section>
+</section>
+
