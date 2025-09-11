@@ -19,6 +19,14 @@ type PieChartOptions = {
   tooltip: ApexTooltip;
 };
 
+type BarChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  xaxis: ApexXAxis;
+};
+
 @Component({
   selector: 'app-subscription-list',
   imports: [
@@ -37,6 +45,7 @@ export class SubscriptionList implements OnInit {
   private readonly dialog = inject(MatDialog);
   protected $subscriptions = this.subscriptionsData.$subscriptions;
   protected $totalCost = this.subscriptionsData.$totalCost;
+
   // Computed property to group and sum costs by category
   protected categoryData = computed(() => {
     const subscriptions = this.$subscriptions();
@@ -53,7 +62,9 @@ export class SubscriptionList implements OnInit {
       series: Array.from(categoryMap.values()),
     };
   });
-  protected pieChartOptions: PieChartOptions = {
+
+  // Computed property for pie chart options
+  protected pieChartOptions = computed<PieChartOptions>(() => ({
     series: this.categoryData().series,
     chart: {
       width: 380,
@@ -80,7 +91,55 @@ export class SubscriptionList implements OnInit {
         },
       },
     },
-  };
+  }));
+
+  // Computed property to group subscriptions by month from nextPaymentDate
+  protected monthlyData = computed(() => {
+    const subscriptions = this.$subscriptions();
+    const monthlyMap = new Map<string, number>();
+
+    // Group by month-year and sum costs
+    subscriptions.forEach((sub) => {
+      if (sub.nextPaymentDate) {
+        const date = new Date(sub.nextPaymentDate);
+        const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        const currentSum = monthlyMap.get(monthYear) || 0;
+        monthlyMap.set(monthYear, currentSum + sub.cost);
+      }
+    });
+
+    // Sort by month-year
+    const sortedEntries = Array.from(monthlyMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+
+    return {
+      labels: sortedEntries.map(([monthYear]) => monthYear),
+      series: sortedEntries.map(([, cost]) => cost),
+    };
+  });
+
+  barChartOptions = computed<BarChartOptions>(() => ({
+    series: [
+      {
+        name: 'Total Cost',
+        data: this.monthlyData().series,
+      },
+    ],
+    chart: {
+      type: 'bar',
+      height: 350,
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    xaxis: {
+      categories: this.monthlyData().labels,
+    },
+  }));
 
   ngOnInit(): void {
     this.subscriptionsData.loadInitialData();

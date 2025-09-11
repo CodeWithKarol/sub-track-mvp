@@ -44,10 +44,18 @@
   <section>
     <apx-chart
       [series]="categoryData().series"
-      [chart]="pieChartOptions.chart"
+      [chart]="pieChartOptions().chart"
       [labels]="categoryData().labels"
-      [responsive]="pieChartOptions.responsive"
-      [tooltip]="pieChartOptions.tooltip"
+      [responsive]="pieChartOptions().responsive"
+      [tooltip]="pieChartOptions().tooltip"
+    ></apx-chart>
+
+    <apx-chart
+      [series]="barChartOptions().series"
+      [chart]="barChartOptions().chart"
+      [dataLabels]="barChartOptions().dataLabels"
+      [plotOptions]="barChartOptions().plotOptions"
+      [xaxis]="barChartOptions().xaxis"
     ></apx-chart>
   </section>
 </section>
