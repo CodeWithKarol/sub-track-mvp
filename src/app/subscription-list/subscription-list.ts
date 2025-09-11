@@ -27,6 +27,13 @@ type BarChartOptions = {
   xaxis: ApexXAxis;
 };
 
+type TimelineChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  plotOptions: ApexPlotOptions;
+};
+
 @Component({
   selector: 'app-subscription-list',
   imports: [
@@ -138,6 +145,94 @@ export class SubscriptionList implements OnInit {
     },
     xaxis: {
       categories: this.monthlyData().labels,
+    },
+  }));
+
+  // Computed property for top costly subscriptions
+  protected topCostlyData = computed(() => {
+    const subscriptions = this.$subscriptions();
+
+    // Sort by cost descending and take top 5
+    const topSubscriptions = subscriptions.sort((a, b) => b.cost - a.cost).slice(0, 5);
+
+    return {
+      labels: topSubscriptions.map((sub) => sub.serviceName),
+      series: topSubscriptions.map((sub) => sub.cost),
+    };
+  });
+
+  protected topCostlyChartOptions = computed<BarChartOptions>(() => ({
+    series: [
+      {
+        name: 'Cost',
+        data: this.topCostlyData().series,
+      },
+    ],
+    chart: {
+      type: 'bar',
+      height: 350,
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val: string | number | number[]) {
+        const numVal = typeof val === 'number' ? val : Number(val);
+        return `$${numVal.toFixed(2)}`;
+      },
+    },
+    xaxis: {
+      categories: this.topCostlyData().labels,
+    },
+  }));
+
+  // Computed property for billing cycle cost distribution
+  protected billingCycleData = computed(() => {
+    const subscriptions = this.$subscriptions();
+    const cycleMap = new Map<string, number>();
+
+    // Group by billing cycle and sum costs
+    subscriptions.forEach((sub) => {
+      const currentSum = cycleMap.get(sub.billingCycle) || 0;
+      cycleMap.set(sub.billingCycle, currentSum + sub.cost);
+    });
+
+    return {
+      labels: Array.from(cycleMap.keys()).map((cycle) =>
+        cycle === 'monthly' ? 'Monthly' : 'Yearly',
+      ),
+      series: Array.from(cycleMap.values()),
+    };
+  });
+
+  protected billingCycleChartOptions = computed<BarChartOptions>(() => ({
+    series: [
+      {
+        name: 'Total Cost',
+        data: this.billingCycleData().series,
+      },
+    ],
+    chart: {
+      type: 'bar',
+      height: 350,
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val: string | number | number[]) {
+        const numVal = typeof val === 'number' ? val : Number(val);
+        return `$${numVal.toFixed(2)}`;
+      },
+    },
+    xaxis: {
+      categories: this.billingCycleData().labels,
     },
   }));
 
