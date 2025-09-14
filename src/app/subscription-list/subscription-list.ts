@@ -1,15 +1,22 @@
-import {Component, computed, inject, OnInit} from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
-import {CurrencyPipe, DatePipe, TitleCasePipe} from '@angular/common';
-import {SubscriptionsData} from '../subscriptions-data';
-import {MatDialog} from '@angular/material/dialog';
-import {DeleteSubscriptionDialog} from '../delete-subscription-dialog/delete-subscription-dialog';
-import {UpdateSubscriptionDialog} from '../update-subscription-dialog/update-subscription-dialog';
-import {CreateSubscriptionDialog} from '../create-subscription-dialog/create-subscription-dialog';
-import {filter, take, tap} from 'rxjs';
-import {Subscription} from '../subscription.model';
-import {ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexTooltip, NgApexchartsModule,} from 'ng-apexcharts';
+import { Component, computed, inject, linkedSignal, OnInit, signal, viewChild } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { SubscriptionsData } from '../subscriptions-data';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
+import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-subscription-dialog';
+import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
+import { filter, take, tap } from 'rxjs';
+import { Subscription } from '../subscription.model';
+import { ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexTooltip, NgApexchartsModule } from 'ng-apexcharts';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 type PieChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -40,18 +47,32 @@ type TimelineChartOptions = {
     MatCardModule,
     MatButtonModule,
     CurrencyPipe,
+    NgApexchartsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatTableModule,
     DatePipe,
     TitleCasePipe,
-    NgApexchartsModule,
+    MatIconModule,
+    MatPaginatorModule,
   ],
   templateUrl: './subscription-list.html',
   styleUrl: './subscription-list.scss',
 })
 export class SubscriptionList implements OnInit {
+  private readonly paginator = viewChild.required<MatPaginator>('paginator');
   private readonly subscriptionsData = inject(SubscriptionsData);
   private readonly dialog = inject(MatDialog);
   protected $subscriptions = this.subscriptionsData.$subscriptions;
   protected $totalCost = this.subscriptionsData.$totalCost;
+  protected $dataSource = computed<MatTableDataSource<Subscription>>(() => {
+    const subscriptions = this.$subscriptions();
+    const dataSource = new MatTableDataSource<Subscription>(subscriptions);
+    dataSource.paginator = this.paginator();
+    return dataSource;
+  });
 
   // Computed property to group and sum costs by category
   protected categoryData = computed(() => {
@@ -235,6 +256,36 @@ export class SubscriptionList implements OnInit {
       categories: this.billingCycleData().labels,
     },
   }));
+
+  protected selectedCategory = signal('');
+  protected selectedBillingCycle = signal('');
+
+  protected readonly categories = [
+    { value: 'Entertainment', viewValue: 'Entertainment' },
+    { value: 'Music', viewValue: 'Music' },
+    { value: 'Productivity', viewValue: 'Productivity' },
+    { value: 'Shopping', viewValue: 'Shopping' },
+  ];
+
+  protected $filteredSubscriptions = linkedSignal(() => {
+    const subscriptions = this.$subscriptions();
+    const category = this.selectedCategory();
+
+    if (!category) {
+      return subscriptions;
+    } else {
+      return subscriptions.filter((sub) => sub.category === category);
+    }
+  });
+
+  displayedColumns: string[] = [
+    'serviceName',
+    'cost',
+    'nextPaymentDate',
+    'billingCycle',
+    'category',
+    'actions',
+  ];
 
   ngOnInit(): void {
     this.subscriptionsData.loadInitialData();
