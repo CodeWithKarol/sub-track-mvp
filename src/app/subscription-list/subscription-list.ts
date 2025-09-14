@@ -17,6 +17,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 type PieChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -43,6 +46,7 @@ type TimelineChartOptions = {
 
 @Component({
   selector: 'app-subscription-list',
+  providers: [provideNativeDateAdapter()],
   imports: [
     MatCardModule,
     MatButtonModule,
@@ -58,12 +62,15 @@ type TimelineChartOptions = {
     MatIconModule,
     MatPaginatorModule,
     FormsModule,
+    MatDatepickerModule,
+    MatSortModule,
   ],
   templateUrl: './subscription-list.html',
   styleUrl: './subscription-list.scss',
 })
 export class SubscriptionList implements OnInit {
-  private readonly paginator = viewChild.required<MatPaginator>('paginator');
+  private readonly paginator = viewChild.required(MatPaginator);
+  private readonly sort = viewChild.required(MatSort);
   private readonly subscriptionsData = inject(SubscriptionsData);
   private readonly dialog = inject(MatDialog);
   protected $subscriptions = this.subscriptionsData.$subscriptions;
@@ -72,6 +79,7 @@ export class SubscriptionList implements OnInit {
     const subscriptions = this.$subscriptions();
     const dataSource = new MatTableDataSource<Subscription>(this.$filteredSubscriptions());
     dataSource.paginator = this.paginator();
+    dataSource.sort = this.sort();
     return dataSource;
   });
 
@@ -261,6 +269,8 @@ export class SubscriptionList implements OnInit {
   protected selectedCategory = signal('');
   protected selectedBillingCycle = signal('');
   protected searchTerm = signal('');
+  protected selectedStartDate = signal<Date | null>(null);
+  protected selectedEndDate = signal<Date | null>(null);
 
   protected readonly categories = [
     { value: 'Entertainment', viewValue: 'Entertainment' },
@@ -279,8 +289,16 @@ export class SubscriptionList implements OnInit {
     const searchTerm = this.searchTerm();
     const selectedCategory = this.selectedCategory();
     const selectedBillingCycle = this.selectedBillingCycle();
+    const selectedStartDate = this.selectedStartDate();
+    const selectedEndDate = this.selectedEndDate();
 
-    if (!searchTerm && !selectedCategory && !selectedBillingCycle) {
+    if (
+      !searchTerm &&
+      !selectedCategory &&
+      !selectedBillingCycle &&
+      !selectedStartDate &&
+      !selectedEndDate
+    ) {
       return subscriptions;
     }
 
@@ -290,7 +308,15 @@ export class SubscriptionList implements OnInit {
         !selectedBillingCycle || sub.billingCycle === selectedBillingCycle;
       const matchesSearchTerm =
         !searchTerm || sub.serviceName.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesCategory && matchesBillingCycle && matchesSearchTerm;
+      const matchesStartDate = !selectedStartDate || sub.nextPaymentDate >= selectedStartDate;
+      const matchesEndDate = !selectedEndDate || sub.nextPaymentDate <= selectedEndDate;
+      return (
+        matchesCategory &&
+        matchesBillingCycle &&
+        matchesSearchTerm &&
+        matchesStartDate &&
+        matchesEndDate
+      );
     });
   });
 

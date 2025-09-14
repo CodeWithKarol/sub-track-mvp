@@ -10,7 +10,7 @@
     </section>
   </div>
 
-  <section>
+  <section class="filter-section">
     <mat-form-field appearance="outline">
       <mat-label>Filter by Service Name</mat-label>
       <input matInput [(ngModel)]="searchTerm" placeholder="Ex. Netflix"/>
@@ -35,9 +35,20 @@
         }
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Start date" [(ngModel)]="selectedStartDate">
+        <input matEndDate placeholder="End date" [(ngModel)]="selectedEndDate">
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
   </section>
 
-  <table mat-table [dataSource]="$dataSource()">
+  <table mat-table [dataSource]="$dataSource()" matSort>
     <ng-container matColumnDef="serviceName">
       <th mat-header-cell *matHeaderCellDef>Service Name</th>
       <td mat-cell *matCellDef="let element">
@@ -46,22 +57,22 @@
     </ng-container>
 
     <ng-container matColumnDef="cost">
-      <th mat-header-cell *matHeaderCellDef>Cost</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Cost</th>
       <td mat-cell *matCellDef="let element">{{ element.cost | currency }}</td>
     </ng-container>
 
     <ng-container matColumnDef="nextPaymentDate">
-      <th mat-header-cell *matHeaderCellDef>Date</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
       <td mat-cell *matCellDef="let element">{{ element.nextPaymentDate | date: 'shortDate' }}</td>
     </ng-container>
 
     <ng-container matColumnDef="billingCycle">
-      <th mat-header-cell *matHeaderCellDef>Billing Cycle</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Billing Cycle</th>
       <td mat-cell *matCellDef="let element">{{ element.billingCycle | titlecase }}</td>
     </ng-container>
 
     <ng-container matColumnDef="category">
-      <th mat-header-cell *matHeaderCellDef>Category</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
       <td mat-cell *matCellDef="let element">{{ element.category | titlecase }}</td>
     </ng-container>
 
@@ -87,7 +98,7 @@
     </tr>
   </table>
 
-  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 </section>
 
 <section>
