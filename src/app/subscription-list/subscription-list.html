@@ -10,25 +10,32 @@
     </section>
   </div>
 
-  <!--  <mat-form-field appearance="outline">-->
-  <!--    <mat-label>Category</mat-label>-->
-  <!--    <mat-select [(value)]="selectedCategory">-->
-  <!--      <mat-option></mat-option>-->
-  <!--      @for (option of categories; track option) {-->
-  <!--        <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>-->
-  <!--      }-->
-  <!--    </mat-select>-->
-  <!--  </mat-form-field>-->
+  <section>
+    <mat-form-field appearance="outline">
+      <mat-label>Filter by Service Name</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Ex. Netflix"/>
+    </mat-form-field>
 
-  <!--  <mat-form-field appearance="outline">-->
-  <!--    <mat-label>Category</mat-label>-->
-  <!--    <mat-select [(value)]="selectedBillingCycle">-->
-  <!--      <mat-option></mat-option>-->
-  <!--      @for (option of categories; track option) {-->
-  <!--        <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>-->
-  <!--      }-->
-  <!--    </mat-select>-->
-  <!--  </mat-form-field>-->
+    <mat-form-field appearance="outline">
+      <mat-label>Filter by Category</mat-label>
+      <mat-select [(value)]="selectedCategory">
+        <mat-option></mat-option>
+        @for (option of categories; track option) {
+          <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filter by Billing Cycle</mat-label>
+      <mat-select [(value)]="selectedBillingCycle">
+        <mat-option></mat-option>
+        @for (option of billingCycles; track option) {
+          <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </section>
 
   <table mat-table [dataSource]="$dataSource()">
     <ng-container matColumnDef="serviceName">
@@ -72,6 +79,12 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">
+        <h4>No data matching the filter.</h4>
+      </td>
+    </tr>
   </table>
 
   <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>

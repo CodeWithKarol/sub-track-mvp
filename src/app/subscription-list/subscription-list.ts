@@ -10,7 +10,7 @@ import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-s
 import { filter, take, tap } from 'rxjs';
 import { Subscription } from '../subscription.model';
 import { ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexTooltip, NgApexchartsModule } from 'ng-apexcharts';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -57,6 +57,7 @@ type TimelineChartOptions = {
     TitleCasePipe,
     MatIconModule,
     MatPaginatorModule,
+    FormsModule,
   ],
   templateUrl: './subscription-list.html',
   styleUrl: './subscription-list.scss',
@@ -69,7 +70,7 @@ export class SubscriptionList implements OnInit {
   protected $totalCost = this.subscriptionsData.$totalCost;
   protected $dataSource = computed<MatTableDataSource<Subscription>>(() => {
     const subscriptions = this.$subscriptions();
-    const dataSource = new MatTableDataSource<Subscription>(subscriptions);
+    const dataSource = new MatTableDataSource<Subscription>(this.$filteredSubscriptions());
     dataSource.paginator = this.paginator();
     return dataSource;
   });
@@ -259,6 +260,7 @@ export class SubscriptionList implements OnInit {
 
   protected selectedCategory = signal('');
   protected selectedBillingCycle = signal('');
+  protected searchTerm = signal('');
 
   protected readonly categories = [
     { value: 'Entertainment', viewValue: 'Entertainment' },
@@ -267,15 +269,29 @@ export class SubscriptionList implements OnInit {
     { value: 'Shopping', viewValue: 'Shopping' },
   ];
 
+  protected readonly billingCycles = [
+    { value: 'monthly', viewValue: 'Monthly' },
+    { value: 'yearly', viewValue: 'Yearly' },
+  ];
+
   protected $filteredSubscriptions = linkedSignal(() => {
     const subscriptions = this.$subscriptions();
-    const category = this.selectedCategory();
+    const searchTerm = this.searchTerm();
+    const selectedCategory = this.selectedCategory();
+    const selectedBillingCycle = this.selectedBillingCycle();
 
-    if (!category) {
+    if (!searchTerm && !selectedCategory && !selectedBillingCycle) {
       return subscriptions;
-    } else {
-      return subscriptions.filter((sub) => sub.category === category);
     }
+
+    return subscriptions.filter((sub) => {
+      const matchesCategory = !selectedCategory || sub.category === selectedCategory;
+      const matchesBillingCycle =
+        !selectedBillingCycle || sub.billingCycle === selectedBillingCycle;
+      const matchesSearchTerm =
+        !searchTerm || sub.serviceName.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesCategory && matchesBillingCycle && matchesSearchTerm;
+    });
   });
 
   displayedColumns: string[] = [
