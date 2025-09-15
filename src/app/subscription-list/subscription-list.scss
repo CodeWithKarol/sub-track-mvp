@@ -239,7 +239,7 @@ h1 {
     &::after {
       content: '';
       display: block;
-      width: 80px;
+      width: 60px;
       height: 4px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 12px 0 0 0;
@@ -250,7 +250,7 @@ h1 {
 
 .charts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 24px;
   margin-top: 32px;
 }
@@ -301,25 +301,38 @@ h1 {
 // Responsive design for charts
 @media (max-width: 1200px) {
   .charts {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 20px;
   }
 
   .charts-overview {
     padding: 20px;
-
-    h1 {
-      font-size: 1.7rem;
-
-      &::after {
-        width: 70px;
-      }
-    }
   }
 
   .chart-container {
     .chart-title {
       font-size: 1.1rem;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .charts {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+  }
+
+  .charts-overview {
+    h1 {
+      font-size: 1.6rem;
+    }
+  }
+
+  .chart-container {
+    padding: 18px;
+
+    .chart-title {
+      font-size: 1.05rem;
     }
   }
 }
@@ -390,7 +403,7 @@ h1 {
   .charts {
     grid-template-columns: 1fr;
     gap: 16px;
-    margin-top: 24px;
+    margin-top: 20px;
   }
 
   .chart-container {
@@ -401,22 +414,24 @@ h1 {
       font-size: 1rem;
 
       &::after {
-        width: 30px;
+        width: 35px;
       }
     }
   }
 
   .charts-overview {
-    margin-top: 24px;
-    padding: 20px;
+    margin-top: 20px;
+    padding: 18px;
     border-radius: 12px;
 
     h1 {
       font-size: 1.5rem;
+      text-align: center;
 
       &::after {
         width: 60px;
         height: 3px;
+        margin: 12px auto 0;
       }
     }
   }
@@ -493,26 +508,26 @@ h1 {
   // Charts mobile
   .charts {
     gap: 12px;
-    margin-top: 20px;
+    margin-top: 16px;
   }
 
   .chart-container {
-    padding: 12px;
+    padding: 14px;
     border-radius: 10px;
 
     .chart-title {
       font-size: 0.95rem;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
 
       &::after {
-        width: 25px;
-        height: 1.5px;
+        width: 30px;
+        height: 2px;
       }
     }
   }
 
   .charts-overview {
-    margin-top: 20px;
+    margin-top: 16px;
     padding: 16px;
     border-radius: 10px;
 
@@ -521,7 +536,7 @@ h1 {
       margin-bottom: 16px;
 
       &::after {
-        width: 50px;
+        width: 40px;
         height: 3px;
       }
     }
