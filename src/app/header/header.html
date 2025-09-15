@@ -1,21 +1,43 @@
-<mat-toolbar>
-  <button matIconButton>
-    <mat-icon>wallet</mat-icon>
-  </button>
-  <span>SubTrack</span>
-  <span class="example-spacer"></span>
-  <button matIconButton [disabled]="$numOfDueSubscriptions() === 0">
-    <mat-icon [matBadge]="$numOfDueSubscriptions()" [matMenuTriggerFor]="menu"
-      >notifications</mat-icon
-    >
-  </button>
-  <mat-menu #menu="matMenu">
-    @for (subscription of $dueSubscriptions(); track subscription.id) {
-      <button mat-menu-item>
-        {{
-          `Upcoming payment: ${subscription.serviceName} on ${(subscription.nextPaymentDate | date: 'shortDate')} for ${(subscription.cost | currency)}.`
-        }}
+<header class="app-header">
+  <mat-toolbar class="header-toolbar">
+    <div class="brand-section">
+      <button mat-icon-button class="brand-icon">
+        <mat-icon>wallet</mat-icon>
       </button>
-    }
-  </mat-menu>
-</mat-toolbar>
+      <span class="brand-title">SubTrack</span>
+    </div>
+
+    <div class="header-spacer"></div>
+
+    <div class="actions-section">
+      <button
+        mat-icon-button
+        class="notification-button"
+        [disabled]="$numOfDueSubscriptions() === 0"
+        [matMenuTriggerFor]="menu"
+      >
+        <mat-icon
+          [matBadge]="$numOfDueSubscriptions()"
+          matBadgeColor="accent"
+          [matBadgeHidden]="$numOfDueSubscriptions() === 0"
+        >
+          notifications
+        </mat-icon>
+      </button>
+    </div>
+
+    <mat-menu #menu="matMenu" class="notification-menu">
+      @for (subscription of $dueSubscriptions(); track subscription.id) {
+        <button mat-menu-item class="notification-item">
+          <div class="notification-content">
+            <div class="notification-title">{{ subscription.serviceName }}</div>
+            <div class="notification-details">
+              Due {{ subscription.nextPaymentDate | date: 'shortDate' }} •
+              {{ subscription.cost | currency }}
+            </div>
+          </div>
+        </button>
+      }
+    </mat-menu>
+  </mat-toolbar>
+</header>
