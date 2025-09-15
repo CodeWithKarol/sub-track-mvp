@@ -1,12 +1,4 @@
-import {
-  Component,
-  computed,
-  inject,
-  linkedSignal,
-  OnInit,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, computed, inject, OnInit, signal, viewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
@@ -329,7 +321,7 @@ export class SubscriptionList implements OnInit {
   protected readonly categories = subscriptionCategories;
   protected readonly billingCycles = billingCycles;
 
-  protected $filteredSubscriptions = linkedSignal(() => {
+  protected $filteredSubscriptions = computed(() => {
     const subscriptions = this.$subscriptions();
     const searchTerm = this.searchTerm();
     const selectedCategory = this.selectedCategory();
@@ -348,13 +340,39 @@ export class SubscriptionList implements OnInit {
     }
 
     return subscriptions.filter((sub) => {
+      // Category filter
       const matchesCategory = !selectedCategory || sub.category === selectedCategory;
+
+      // Billing cycle filter
       const matchesBillingCycle =
         !selectedBillingCycle || sub.billingCycle === selectedBillingCycle;
+
+      // Search term filter (case insensitive)
       const matchesSearchTerm =
         !searchTerm || sub.serviceName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStartDate = !selectedStartDate || sub.nextPaymentDate >= selectedStartDate;
-      const matchesEndDate = !selectedEndDate || sub.nextPaymentDate <= selectedEndDate;
+
+      // Date filters - ensure proper date comparison
+      let matchesStartDate = true;
+      let matchesEndDate = true;
+
+      if (selectedStartDate || selectedEndDate) {
+        const subDate = new Date(sub.nextPaymentDate);
+
+        if (selectedStartDate) {
+          const startDate = new Date(selectedStartDate);
+          // Set start date to beginning of day for inclusive comparison
+          startDate.setHours(0, 0, 0, 0);
+          matchesStartDate = subDate >= startDate;
+        }
+
+        if (selectedEndDate) {
+          const endDate = new Date(selectedEndDate);
+          // Set end date to end of day for inclusive comparison
+          endDate.setHours(23, 59, 59, 999);
+          matchesEndDate = subDate <= endDate;
+        }
+      }
+
       return (
         matchesCategory &&
         matchesBillingCycle &&
