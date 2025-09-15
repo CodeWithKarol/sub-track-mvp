@@ -7,6 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { billingCycles, subscriptionCategories } from '../subscription.model';
 
 @Component({
   selector: 'app-update-subscription-dialog',
@@ -27,18 +28,10 @@ export class UpdateSubscriptionDialog {
   private readonly dialogRef = inject(MatDialogRef<UpdateSubscriptionDialog>);
   private readonly data = inject(MAT_DIALOG_DATA);
   private readonly fb = inject(FormBuilder);
-  protected readonly billingCycles = [
-    { value: 'monthly', viewValue: 'Monthly' },
-    { value: 'yearly', viewValue: 'Yearly' },
-  ];
+  protected readonly billingCycles = billingCycles;
   protected selectedBillingCycle = signal(this.data?.billingCycle ?? 'monthly');
   protected selectedCategory = signal(this.data?.category ?? 'Entertainment');
-  protected readonly categories = [
-    { value: 'Entertainment', viewValue: 'Entertainment' },
-    { value: 'Music', viewValue: 'Music' },
-    { value: 'Productivity', viewValue: 'Productivity' },
-    { value: 'Shopping', viewValue: 'Shopping' },
-  ];
+  protected readonly categories = subscriptionCategories;
   protected form = this.fb.group({
     serviceName: [this.data?.serviceName, Validators.required],
     cost: [this.data?.cost, [Validators.required, Validators.min(0)]],

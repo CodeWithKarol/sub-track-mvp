@@ -16,7 +16,7 @@ import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-s
 import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-subscription-dialog';
 import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
 import { filter, take, tap } from 'rxjs';
-import { Subscription } from '../subscription.model';
+import { billingCycles, Subscription, subscriptionCategories } from '../subscription.model';
 import {
   ApexChart,
   ApexNonAxisChartSeries,
@@ -326,18 +326,8 @@ export class SubscriptionList implements OnInit {
   protected searchTerm = signal('');
   protected selectedStartDate = signal<Date | null>(null);
   protected selectedEndDate = signal<Date | null>(null);
-
-  protected readonly categories = [
-    { value: 'Entertainment', viewValue: 'Entertainment' },
-    { value: 'Music', viewValue: 'Music' },
-    { value: 'Productivity', viewValue: 'Productivity' },
-    { value: 'Shopping', viewValue: 'Shopping' },
-  ];
-
-  protected readonly billingCycles = [
-    { value: 'monthly', viewValue: 'Monthly' },
-    { value: 'yearly', viewValue: 'Yearly' },
-  ];
+  protected readonly categories = subscriptionCategories;
+  protected readonly billingCycles = billingCycles;
 
   protected $filteredSubscriptions = linkedSignal(() => {
     const subscriptions = this.$subscriptions();

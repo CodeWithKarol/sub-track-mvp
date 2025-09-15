@@ -1,12 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import {Component, inject, signal} from '@angular/core';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {billingCycles, subscriptionCategories} from '../subscription.model';
 
 @Component({
   selector: 'app-create-subscription-dialog',
@@ -35,16 +36,8 @@ export class CreateSubscriptionDialog {
   });
   protected selectedBillingCycle = signal('monthly');
   protected selectedCategory = signal('Entertainment');
-  protected readonly categories = [
-    { value: 'Entertainment', viewValue: 'Entertainment' },
-    { value: 'Music', viewValue: 'Music' },
-    { value: 'Productivity', viewValue: 'Productivity' },
-    { value: 'Shopping', viewValue: 'Shopping' },
-  ];
-  protected billingCycles = [
-    { value: 'monthly', viewValue: 'Monthly' },
-    { value: 'yearly', viewValue: 'Yearly' },
-  ];
+  protected readonly categories = subscriptionCategories;
+  protected billingCycles = billingCycles;
 
   onSubmit(): void {
     if (!this.form.valid) {
