@@ -41,10 +41,142 @@
   gap: 8px;
 }
 
+h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+  text-align: center;
+  position: relative;
+}
+
+// Charts section styling
+.charts-overview {
+  margin-top: 32px;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.chart-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+
+  &:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+    border-color: #e0e0e0;
+  }
+
+  .chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  apx-chart {
+    display: block;
+    width: 100%;
+  }
+}
+
+// Chart titles and sections
+section h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 8px;
+}
+
+// Responsive design for charts
+@media (max-width: 1200px) {
+  .charts {
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 20px;
+  }
+
+  .charts-overview h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .chart-container {
+    padding: 16px;
+    border-radius: 12px;
+
+    .chart-title {
+      font-size: 1rem;
+    }
+  }
+
+  .charts-overview {
+    margin-top: 24px;
+
+    h1 {
+      font-size: 1.4rem;
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .summary {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+  }
+
+  .charts {
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .chart-container {
+    padding: 12px;
+    border-radius: 10px;
+
+    .chart-title {
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+  }
+
+  .charts-overview {
+    margin-top: 20px;
+
+    h1 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+
+      &::after {
+        width: 40px;
+        height: 2px;
+      }
+    }
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
