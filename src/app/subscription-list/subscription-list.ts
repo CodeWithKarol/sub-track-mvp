@@ -1,25 +1,39 @@
-import {Component, computed, inject, linkedSignal, OnInit, signal, viewChild,} from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
-import {CurrencyPipe, DatePipe, TitleCasePipe} from '@angular/common';
-import {SubscriptionsData} from '../subscriptions-data';
-import {MatDialog} from '@angular/material/dialog';
-import {DeleteSubscriptionDialog} from '../delete-subscription-dialog/delete-subscription-dialog';
-import {UpdateSubscriptionDialog} from '../update-subscription-dialog/update-subscription-dialog';
-import {CreateSubscriptionDialog} from '../create-subscription-dialog/create-subscription-dialog';
-import {filter, take, tap} from 'rxjs';
-import {Subscription} from '../subscription.model';
-import {ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexTooltip, NgApexchartsModule,} from 'ng-apexcharts';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {provideNativeDateAdapter} from '@angular/material/core';
-import {MatSort, MatSortModule} from '@angular/material/sort';
+import {
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { SubscriptionsData } from '../subscriptions-data';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
+import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-subscription-dialog';
+import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
+import { filter, take, tap } from 'rxjs';
+import { Subscription } from '../subscription.model';
+import {
+  ApexChart,
+  ApexNonAxisChartSeries,
+  ApexResponsive,
+  ApexTooltip,
+  NgApexchartsModule,
+} from 'ng-apexcharts';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 type PieChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -35,6 +49,7 @@ type BarChartOptions = {
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
   xaxis: ApexXAxis;
+  tooltip: ApexTooltip;
 };
 
 type TimelineChartOptions = {
@@ -135,7 +150,7 @@ export class SubscriptionList implements OnInit {
   });
 
   // Computed property to group subscriptions by month from nextPaymentDate
-  protected monthlyData = computed(() => {
+  private monthlyData = computed(() => {
     const subscriptions = this.$subscriptions();
     const monthlyMap = new Map<string, number>();
 
@@ -154,7 +169,7 @@ export class SubscriptionList implements OnInit {
 
     return {
       labels: sortedEntries.map(([monthYear]) => monthYear),
-      series: sortedEntries.map(([, cost]) => cost),
+      series: sortedEntries.map(([, cost]) => cost.toFixed(2)).map((cost) => parseFloat(cost)),
     };
   });
 
@@ -177,16 +192,27 @@ export class SubscriptionList implements OnInit {
         },
       },
       dataLabels: {
-        enabled: false,
+        enabled: true,
+        formatter: function (val: string | number | number[]) {
+          const numVal = typeof val === 'number' ? val : Number(val);
+          return `$${numVal.toFixed(2)}`;
+        },
       },
       xaxis: {
         categories: labels,
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return `$${val.toFixed(2)}`;
+          },
+        },
       },
     };
   });
 
   // Computed property for top costly subscriptions
-  protected topCostlyData = computed(() => {
+  private topCostlyData = computed(() => {
     const subscriptions = this.$subscriptions();
 
     // Sort by cost descending and take top 5
@@ -198,36 +224,47 @@ export class SubscriptionList implements OnInit {
     };
   });
 
-  protected topCostlyChartOptions = computed<BarChartOptions>(() => ({
-    series: [
-      {
-        name: 'Cost',
-        data: this.topCostlyData().series,
+  protected topCostlyChartOptions = computed<BarChartOptions>(() => {
+    const { labels, series } = this.topCostlyData();
+
+    return {
+      series: [
+        {
+          name: 'Cost',
+          data: series,
+        },
+      ],
+      chart: {
+        type: 'bar',
+        height: 350,
       },
-    ],
-    chart: {
-      type: 'bar',
-      height: 350,
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
+      plotOptions: {
+        bar: {
+          horizontal: true,
+        },
       },
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: function (val: string | number | number[]) {
-        const numVal = typeof val === 'number' ? val : Number(val);
-        return `$${numVal.toFixed(2)}`;
+      dataLabels: {
+        enabled: true,
+        formatter: function (val: string | number | number[]) {
+          const numVal = typeof val === 'number' ? val : Number(val);
+          return `$${numVal.toFixed(2)}`;
+        },
       },
-    },
-    xaxis: {
-      categories: this.topCostlyData().labels,
-    },
-  }));
+      xaxis: {
+        categories: labels,
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return `$${val.toFixed(2)}`;
+          },
+        },
+      },
+    };
+  });
 
   // Computed property for billing cycle cost distribution
-  protected billingCycleData = computed(() => {
+  private billingCycleData = computed(() => {
     const subscriptions = this.$subscriptions();
     const cycleMap = new Map<string, number>();
 
@@ -241,37 +278,48 @@ export class SubscriptionList implements OnInit {
       labels: Array.from(cycleMap.keys()).map((cycle) =>
         cycle === 'monthly' ? 'Monthly' : 'Yearly',
       ),
-      series: Array.from(cycleMap.values()),
+      series: Array.from(cycleMap.values()).map((cost) => parseFloat(cost.toFixed(2))),
     };
   });
 
-  protected billingCycleChartOptions = computed<BarChartOptions>(() => ({
-    series: [
-      {
-        name: 'Total Cost',
-        data: this.billingCycleData().series,
+  protected billingCycleChartOptions = computed<BarChartOptions>(() => {
+    const { labels, series } = this.billingCycleData();
+
+    return {
+      series: [
+        {
+          name: 'Total Cost',
+          data: series,
+        },
+      ],
+      chart: {
+        type: 'bar',
+        height: 350,
       },
-    ],
-    chart: {
-      type: 'bar',
-      height: 350,
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
+      plotOptions: {
+        bar: {
+          horizontal: false,
+        },
       },
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: function (val: string | number | number[]) {
-        const numVal = typeof val === 'number' ? val : Number(val);
-        return `$${numVal.toFixed(2)}`;
+      xaxis: {
+        categories: labels,
       },
-    },
-    xaxis: {
-      categories: this.billingCycleData().labels,
-    },
-  }));
+      dataLabels: {
+        enabled: true,
+        formatter: function (val: string | number | number[]) {
+          const numVal = typeof val === 'number' ? val : Number(val);
+          return `$${numVal.toFixed(2)}`;
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return `$${val.toFixed(2)}`;
+          },
+        },
+      },
+    };
+  });
 
   protected selectedCategory = signal('');
   protected selectedBillingCycle = signal('');

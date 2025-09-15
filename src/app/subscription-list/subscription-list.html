@@ -13,7 +13,7 @@
   <section class="filter-section">
     <mat-form-field appearance="outline">
       <mat-label>Filter by Service Name</mat-label>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Ex. Netflix"/>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Ex. Netflix" />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -39,8 +39,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Enter a date range</mat-label>
       <mat-date-range-input [rangePicker]="picker">
-        <input matStartDate placeholder="Start date" [(ngModel)]="selectedStartDate">
-        <input matEndDate placeholder="End date" [(ngModel)]="selectedEndDate">
+        <input matStartDate placeholder="Start date" [(ngModel)]="selectedStartDate" />
+        <input matEndDate placeholder="End date" [(ngModel)]="selectedEndDate" />
       </mat-date-range-input>
       <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -98,7 +98,10 @@
     </tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    aria-label="Select page of users"
+  ></mat-paginator>
 </section>
 
 <section>
@@ -113,26 +116,31 @@
       [tooltip]="pieChartOptions().tooltip"
     ></apx-chart>
 
-    <!--    <apx-chart-->
-    <!--      [series]="barChartOptions().series"-->
-    <!--      [chart]="barChartOptions().chart"-->
-    <!--      [dataLabels]="barChartOptions().dataLabels"-->
-    <!--      [plotOptions]="barChartOptions().plotOptions"-->
-    <!--      [xaxis]="barChartOptions().xaxis"-->
-    <!--    ></apx-chart>-->
+    <apx-chart
+      [series]="barChartOptions().series"
+      [chart]="barChartOptions().chart"
+      [xaxis]="barChartOptions().xaxis"
+      [plotOptions]="barChartOptions().plotOptions"
+      [dataLabels]="barChartOptions().dataLabels"
+      [tooltip]="barChartOptions().tooltip"
+    ></apx-chart>
 
-    <!--    <apx-chart-->
-    <!--      [series]="topCostlyChartOptions().series"-->
-    <!--      [chart]="topCostlyChartOptions().chart"-->
-    <!--      [plotOptions]="topCostlyChartOptions().plotOptions"-->
-    <!--      [xaxis]="topCostlyChartOptions().xaxis"-->
-    <!--    ></apx-chart>-->
+    <apx-chart
+      [series]="topCostlyChartOptions().series"
+      [chart]="topCostlyChartOptions().chart"
+      [plotOptions]="topCostlyChartOptions().plotOptions"
+      [xaxis]="topCostlyChartOptions().xaxis"
+      [dataLabels]="topCostlyChartOptions().dataLabels"
+      [tooltip]="topCostlyChartOptions().tooltip"
+    ></apx-chart>
 
-    <!--    <apx-chart-->
-    <!--      [series]="billingCycleChartOptions().series"-->
-    <!--      [chart]="billingCycleChartOptions().chart"-->
-    <!--      [plotOptions]="billingCycleChartOptions().plotOptions"-->
-    <!--      [xaxis]="billingCycleChartOptions().xaxis"-->
-    <!--    ></apx-chart>-->
+    <apx-chart
+      [series]="billingCycleChartOptions().series"
+      [chart]="billingCycleChartOptions().chart"
+      [plotOptions]="billingCycleChartOptions().plotOptions"
+      [dataLabels]="billingCycleChartOptions().dataLabels"
+      [xaxis]="billingCycleChartOptions().xaxis"
+      [tooltip]="billingCycleChartOptions().tooltip"
+    ></apx-chart>
   </section>
 </section>
