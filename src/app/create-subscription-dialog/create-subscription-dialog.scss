@@ -4,7 +4,7 @@
   color: rgba(0, 0, 0, 0.87);
   margin-bottom: 1rem;
   text-align: left;
-  padding: 0 24px;
+  padding: 16px 24px 0; // Dodano górny padding
 }
 
 .mat-mdc-dialog-content {
@@ -20,7 +20,16 @@
 
   .mat-mdc-form-field {
     width: 100%;
-    margin-top: 8px; // Dodatkowy margines dla etykiet outline
+    margin-top: 8px;
+
+    .mdc-floating-label {
+      font-size: 1rem;
+    }
+
+    .mat-mdc-form-field-hint {
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.6);
+    }
 
     &.mat-form-field-appearance-outline {
       .mat-mdc-form-field-label-wrapper {
@@ -29,7 +38,6 @@
     }
   }
 }
-
 
 .mat-mdc-dialog-actions {
   padding: 8px 24px 24px;
@@ -43,7 +51,7 @@
     font-weight: 500;
     letter-spacing: 0.0892857143em;
 
-    &.mat-primary {
+    &:first-child {
       background-color: #1976d2;
       color: white;
 
@@ -57,7 +65,7 @@
       }
     }
 
-    &:not(.mat-primary) {
+    &:last-child {
       color: #1976d2;
 
       &:hover {
