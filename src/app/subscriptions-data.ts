@@ -1,6 +1,6 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { LocalStorageApi } from './local-storage-api';
-import { Subscription } from './subscription.model';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import {LocalStorageApi} from './local-storage-api';
+import {Subscription} from './subscription.model';
 
 const initialSubscriptions: Subscription[] = [
   {
@@ -230,9 +230,18 @@ export class SubscriptionsData {
 
   isNearDue(subscription: Subscription): boolean {
     const today = new Date();
+    // Normalize today to start of day (remove time component)
+    today.setHours(0, 0, 0, 0);
+
     const dueDate = new Date(subscription.nextPaymentDate);
-    const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
-    return daysUntilDue <= 14;
+    // Normalize due date to start of day (remove time component)
+    dueDate.setHours(0, 0, 0, 0);
+
+    const timeDifference = dueDate.getTime() - today.getTime();
+    const daysUntilDue = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+    // Return true if payment is due within 7 days (0-7 days, excluding overdue payments)
+    return daysUntilDue >= 0 && daysUntilDue <= 7;
   }
   $dueSubscriptions = computed(() => {
     return this.$subscriptions().filter((subscription) => this.isNearDue(subscription));
