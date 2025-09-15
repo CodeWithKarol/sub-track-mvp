@@ -1,25 +1,25 @@
-import { Component, computed, inject, linkedSignal, OnInit, signal, viewChild } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { SubscriptionsData } from '../subscriptions-data';
-import { MatDialog } from '@angular/material/dialog';
-import { DeleteSubscriptionDialog } from '../delete-subscription-dialog/delete-subscription-dialog';
-import { UpdateSubscriptionDialog } from '../update-subscription-dialog/update-subscription-dialog';
-import { CreateSubscriptionDialog } from '../create-subscription-dialog/create-subscription-dialog';
-import { filter, take, tap } from 'rxjs';
-import { Subscription } from '../subscription.model';
-import { ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexTooltip, NgApexchartsModule } from 'ng-apexcharts';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import {Component, computed, inject, linkedSignal, OnInit, signal, viewChild,} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {CurrencyPipe, DatePipe, TitleCasePipe} from '@angular/common';
+import {SubscriptionsData} from '../subscriptions-data';
+import {MatDialog} from '@angular/material/dialog';
+import {DeleteSubscriptionDialog} from '../delete-subscription-dialog/delete-subscription-dialog';
+import {UpdateSubscriptionDialog} from '../update-subscription-dialog/update-subscription-dialog';
+import {CreateSubscriptionDialog} from '../create-subscription-dialog/create-subscription-dialog';
+import {filter, take, tap} from 'rxjs';
+import {Subscription} from '../subscription.model';
+import {ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexTooltip, NgApexchartsModule,} from 'ng-apexcharts';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatSort, MatSortModule} from '@angular/material/sort';
 
 type PieChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -76,15 +76,15 @@ export class SubscriptionList implements OnInit {
   protected $subscriptions = this.subscriptionsData.$subscriptions;
   protected $totalCost = this.subscriptionsData.$totalCost;
   protected $dataSource = computed<MatTableDataSource<Subscription>>(() => {
-    const subscriptions = this.$subscriptions();
-    const dataSource = new MatTableDataSource<Subscription>(this.$filteredSubscriptions());
+    const subscriptions = this.$filteredSubscriptions();
+    const dataSource = new MatTableDataSource<Subscription>(subscriptions);
     dataSource.paginator = this.paginator();
     dataSource.sort = this.sort();
     return dataSource;
   });
 
   // Computed property to group and sum costs by category
-  protected categoryData = computed(() => {
+  private categoryData = computed(() => {
     const subscriptions = this.$subscriptions();
     const categoryMap = new Map<string, number>();
 
@@ -101,34 +101,38 @@ export class SubscriptionList implements OnInit {
   });
 
   // Computed property for pie chart options
-  protected pieChartOptions = computed<PieChartOptions>(() => ({
-    series: this.categoryData().series,
-    chart: {
-      width: 380,
-      type: 'pie',
-    },
-    labels: this.categoryData().labels,
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200,
+  protected pieChartOptions = computed<PieChartOptions>(() => {
+    const { labels, series } = this.categoryData();
+
+    return {
+      series,
+      chart: {
+        width: 380,
+        type: 'pie',
+      },
+      labels,
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+            },
+            legend: {
+              position: 'bottom',
+            },
           },
-          legend: {
-            position: 'bottom',
+        },
+      ],
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return `$${val.toFixed(2)}`;
           },
         },
       },
-    ],
-    tooltip: {
-      y: {
-        formatter: function (val) {
-          return `$${val.toFixed(2)}`;
-        },
-      },
-    },
-  }));
+    };
+  });
 
   // Computed property to group subscriptions by month from nextPaymentDate
   protected monthlyData = computed(() => {
@@ -154,29 +158,32 @@ export class SubscriptionList implements OnInit {
     };
   });
 
-  barChartOptions = computed<BarChartOptions>(() => ({
-    series: [
-      {
-        name: 'Total Cost',
-        data: this.monthlyData().series,
+  barChartOptions = computed<BarChartOptions>(() => {
+    const { labels, series } = this.monthlyData();
+    return {
+      series: [
+        {
+          name: 'Total Cost',
+          data: series,
+        },
+      ],
+      chart: {
+        type: 'bar',
+        height: 350,
       },
-    ],
-    chart: {
-      type: 'bar',
-      height: 350,
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
+      plotOptions: {
+        bar: {
+          horizontal: true,
+        },
       },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      categories: this.monthlyData().labels,
-    },
-  }));
+      dataLabels: {
+        enabled: false,
+      },
+      xaxis: {
+        categories: labels,
+      },
+    };
+  });
 
   // Computed property for top costly subscriptions
   protected topCostlyData = computed(() => {
