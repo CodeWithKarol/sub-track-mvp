@@ -11,7 +11,7 @@ import {
   billingCycles,
   CreateSubscriptionForm,
   DEFAULT_FORM_VALUES,
-  subscriptionCategories
+  subscriptionCategories,
 } from '../subscription.model';
 
 @Component({

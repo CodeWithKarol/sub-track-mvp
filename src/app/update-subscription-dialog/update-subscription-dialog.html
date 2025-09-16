@@ -1,46 +1,65 @@
 <h2 mat-dialog-title>Edit Subscription</h2>
 <mat-dialog-content>
-  <form [formGroup]="form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline">
       <mat-label>Service Name</mat-label>
-      <input matInput formControlName="serviceName"/>
+      <input matInput formControlName="serviceName" placeholder="e.g., Netflix"/>
+      @if (isFieldInvalid('serviceName')) {
+        <mat-error>{{ getFieldError('serviceName') }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Cost</mat-label>
-      <input matInput formControlName="cost" type="number"/>
+      <input matInput type="number" formControlName="cost" placeholder="0.00" step="0.01" min="0"/>
+      <span matTextPrefix>$&nbsp;</span>
+      @if (isFieldInvalid('cost')) {
+        <mat-error>{{ getFieldError('cost') }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Choose a date</mat-label>
+      <mat-label>Next Payment Date</mat-label>
       <input matInput [matDatepicker]="picker" formControlName="nextPaymentDate"/>
-      <mat-hint>MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
+      @if (isFieldInvalid('nextPaymentDate')) {
+        <mat-error>{{ getFieldError('nextPaymentDate') }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Billing Cycle</mat-label>
-      <mat-select [(value)]="selectedBillingCycle" formControlName="billingCycle">
-        <mat-option></mat-option>
-        @for (option of billingCycles; track option) {
+      <mat-select formControlName="billingCycle">
+        @for (option of billingCycles; track option.value) {
           <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
         }
       </mat-select>
+      @if (isFieldInvalid('billingCycle')) {
+        <mat-error>{{ getFieldError('billingCycle') }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Category</mat-label>
-      <mat-select [(value)]="selectedCategory" formControlName="category">
-        <mat-option></mat-option>
-        @for (option of categories; track option) {
+      <mat-select formControlName="category">
+        @for (option of categories; track option.value) {
           <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
         }
       </mat-select>
+      @if (isFieldInvalid('category')) {
+        <mat-error>{{ getFieldError('category') }}</mat-error>
+      }
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button matButton (click)="confirmUpdate()">Update</button>
-  <button matButton mat-dialog-close>Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="!form.valid">
+    Update Subscription
+  </button>
+  <button matButton (click)="onCancel()">Cancel</button>
 </mat-dialog-actions>
