@@ -6,7 +6,7 @@ import {
   ApexPlotOptions,
   ApexResponsive,
   ApexTooltip,
-  ApexXAxis
+  ApexXAxis,
 } from 'ng-apexcharts';
 
 export interface Subscription {
@@ -137,4 +137,22 @@ export const CHART_CONFIG = {
   BAR_HEIGHT: 350,
   MOBILE_BREAKPOINT: 480,
   TOP_SUBSCRIPTIONS_LIMIT: 5,
+} as const;
+
+// Form interface for type safety
+export interface CreateSubscriptionForm {
+  serviceName: string;
+  cost: number;
+  nextPaymentDate: Date;
+  billingCycle: BillingCycle;
+  category: SubscriptionCategory;
+}
+
+// Default form values
+export const DEFAULT_FORM_VALUES: CreateSubscriptionForm = {
+  serviceName: '',
+  cost: 0,
+  nextPaymentDate: new Date(),
+  billingCycle: 'monthly',
+  category: 'Entertainment',
 } as const;
