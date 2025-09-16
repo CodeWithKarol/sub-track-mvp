@@ -1,6 +1,6 @@
-import {computed, inject, Injectable, signal} from '@angular/core';
-import {LocalStorageApi} from './local-storage-api';
-import {Subscription} from './subscription.model';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { LocalStorageApi } from './local-storage-api';
+import { Subscription } from './subscription.model';
 
 const initialSubscriptions: Subscription[] = [
   {
