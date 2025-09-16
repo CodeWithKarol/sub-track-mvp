@@ -104,57 +104,6 @@
       aria-label="Select page of users"
     ></mat-paginator>
   </section>
-
-  <section class="charts-overview">
-    <h1>Spending Overview</h1>
-
-    <section class="charts">
-      <div class="chart-container">
-        <h3 class="chart-title">Cost by Category</h3>
-        <apx-chart
-          [series]="pieChartOptions().series"
-          [chart]="pieChartOptions().chart"
-          [labels]="pieChartOptions().labels"
-          [responsive]="pieChartOptions().responsive"
-          [tooltip]="pieChartOptions().tooltip"
-        ></apx-chart>
-      </div>
-
-      <div class="chart-container">
-        <h3 class="chart-title">Monthly Spending Trend</h3>
-        <apx-chart
-          [series]="barChartOptions().series"
-          [chart]="barChartOptions().chart"
-          [xaxis]="barChartOptions().xaxis"
-          [plotOptions]="barChartOptions().plotOptions"
-          [dataLabels]="barChartOptions().dataLabels"
-          [tooltip]="barChartOptions().tooltip"
-        ></apx-chart>
-      </div>
-
-      <div class="chart-container">
-        <h3 class="chart-title">Most Expensive Subscriptions</h3>
-        <apx-chart
-          [series]="topCostlyChartOptions().series"
-          [chart]="topCostlyChartOptions().chart"
-          [plotOptions]="topCostlyChartOptions().plotOptions"
-          [xaxis]="topCostlyChartOptions().xaxis"
-          [dataLabels]="topCostlyChartOptions().dataLabels"
-          [tooltip]="topCostlyChartOptions().tooltip"
-        ></apx-chart>
-      </div>
-
-      <div class="chart-container">
-        <h3 class="chart-title">Billing Cycle Distribution</h3>
-        <apx-chart
-          [series]="billingCycleChartOptions().series"
-          [chart]="billingCycleChartOptions().chart"
-          [plotOptions]="billingCycleChartOptions().plotOptions"
-          [dataLabels]="billingCycleChartOptions().dataLabels"
-          [xaxis]="billingCycleChartOptions().xaxis"
-          [tooltip]="billingCycleChartOptions().tooltip"
-        ></apx-chart>
-      </div>
-    </section>
-  </section>
 </section>
+
+<app-spending-overview [subscriptions]="$subscriptions()"/>

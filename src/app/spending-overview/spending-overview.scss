@@ -1,0 +1,272 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+// Charts section styling
+.charts-overview {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  border: 1px solid #e9ecef;
+  margin-top: 24px;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 32px;
+    text-align: left;
+    position: relative;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 12px 0 0 0;
+      border-radius: 2px;
+    }
+  }
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.chart-container {
+  background: #fafbfc;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  padding: 24px;
+  transition: all 0.3s ease;
+  border: 1px solid #f1f3f4;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: #e3e6ea;
+
+    .chart-title {
+      color: #667eea;
+    }
+  }
+
+  .chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 20px 0;
+    text-align: center;
+    transition: color 0.3s ease;
+    letter-spacing: 0.3px;
+  }
+
+  apx-chart {
+    display: block;
+    width: 100%;
+
+    // Override ApexCharts default styles
+    ::ng-deep {
+      .apexcharts-canvas {
+        margin: 0 auto;
+      }
+
+      .apexcharts-legend {
+        justify-content: center !important;
+
+        .apexcharts-legend-series {
+          margin: 0 8px !important;
+        }
+      }
+
+      .apexcharts-tooltip {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        border: none !important;
+        border-radius: 8px !important;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 1200px) {
+  .charts {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+  }
+
+  .charts-overview {
+    padding: 20px;
+
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+
+  .chart-container {
+    padding: 20px;
+
+    .chart-title {
+      font-size: 1.05rem;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .charts {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+  }
+
+  .charts-overview {
+    h1 {
+      font-size: 1.6rem;
+    }
+  }
+
+  .chart-container {
+    padding: 18px;
+
+    .chart-title {
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .charts-overview {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 24px;
+
+      &::after {
+        margin: 12px auto 0;
+        width: 50px;
+        height: 3px;
+      }
+    }
+  }
+
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .chart-container {
+    padding: 16px;
+    border-radius: 10px;
+
+    .chart-title {
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    apx-chart {
+      ::ng-deep {
+        .apexcharts-legend {
+          .apexcharts-legend-series {
+            margin: 0 6px !important;
+            font-size: 12px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .charts-overview {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 10px;
+
+    h1 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+
+      &::after {
+        width: 40px;
+        height: 3px;
+      }
+    }
+  }
+
+  .charts {
+    gap: 14px;
+  }
+
+  .chart-container {
+    padding: 14px;
+    border-radius: 8px;
+
+    .chart-title {
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    apx-chart {
+      ::ng-deep {
+        .apexcharts-legend {
+          padding: 0 !important;
+
+          .apexcharts-legend-series {
+            margin: 0 4px !important;
+            font-size: 11px !important;
+          }
+        }
+
+        .apexcharts-datalabel-label {
+          font-size: 11px !important;
+        }
+
+        .apexcharts-datalabel-value {
+          font-size: 12px !important;
+        }
+      }
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .charts-overview {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    margin-top: 0;
+    page-break-inside: avoid;
+  }
+
+  .chart-container {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
