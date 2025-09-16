@@ -26,7 +26,7 @@ import {
   displayedColumns,
   FilterState,
   Subscription,
-  subscriptionCategories
+  subscriptionCategories,
 } from '../subscription.model';
 
 @Component({

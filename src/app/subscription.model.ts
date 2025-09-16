@@ -1,3 +1,14 @@
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexDataLabels,
+  ApexNonAxisChartSeries,
+  ApexPlotOptions,
+  ApexResponsive,
+  ApexTooltip,
+  ApexXAxis
+} from 'ng-apexcharts';
+
 export interface Subscription {
   id: string;
   serviceName: string;
@@ -90,3 +101,40 @@ export interface FilterState {
   billingCycle: string;
   dateRange: DateRange;
 }
+
+// Chart type definitions
+export type PieChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  labels: string[];
+  tooltip: ApexTooltip;
+};
+
+export type BarChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  xaxis: ApexXAxis;
+  tooltip: ApexTooltip;
+};
+
+// Chart data interfaces
+export interface ChartData {
+  labels: string[];
+  series: number[];
+}
+
+export interface MonthlyData extends ChartData {
+  sortedEntries: Array<[string, number]>;
+}
+
+// Chart configuration constants
+export const CHART_CONFIG = {
+  PIE_WIDTH: 380,
+  PIE_WIDTH_MOBILE: 200,
+  BAR_HEIGHT: 350,
+  MOBILE_BREAKPOINT: 480,
+  TOP_SUBSCRIPTIONS_LIMIT: 5,
+} as const;

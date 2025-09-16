@@ -1,76 +1,165 @@
 import { Component, computed, input } from '@angular/core';
+import { ChartComponent } from 'ng-apexcharts';
 import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexDataLabels,
-  ApexNonAxisChartSeries,
-  ApexPlotOptions,
-  ApexResponsive,
-  ApexTooltip,
-  ApexXAxis,
-  ChartComponent,
-} from 'ng-apexcharts';
-import { Subscription } from '../subscription.model';
+  BarChartOptions,
+  CHART_CONFIG,
+  ChartData,
+  MonthlyData,
+  PieChartOptions,
+  Subscription,
+} from '../subscription.model';
 
-type PieChartOptions = {
-  series: ApexNonAxisChartSeries;
-  chart: ApexChart;
-  responsive: ApexResponsive[];
-  labels: any;
-  tooltip: ApexTooltip;
-};
-
-type BarChartOptions = {
-  series: ApexAxisChartSeries;
-  chart: ApexChart;
-  dataLabels: ApexDataLabels;
-  plotOptions: ApexPlotOptions;
-  xaxis: ApexXAxis;
-  tooltip: ApexTooltip;
-};
+const CURRENCY_FORMATTER = {
+  format: (val: number): string => `$${val.toFixed(2)}`,
+  parseValue: (val: string | number | number[]): number => {
+    return typeof val === 'number' ? val : Number(val);
+  },
+} as const;
 
 @Component({
   selector: 'app-spending-overview',
+  standalone: true,
   imports: [ChartComponent],
   templateUrl: './spending-overview.html',
   styleUrl: './spending-overview.scss',
 })
 export class SpendingOverview {
-  subscriptions = input.required<Subscription[]>();
-  // Computed property to group and sum costs by category
-  private categoryData = computed(() => {
-    const subscriptions = this.subscriptions();
-    const categoryMap = new Map<string, number>();
+  // Input
+  readonly subscriptions = input.required<Subscription[]>();
 
-    // Group by category and sum costs
-    subscriptions.forEach((sub) => {
-      const currentSum = categoryMap.get(sub.category) || 0;
-      categoryMap.set(sub.category, currentSum + sub.cost);
-    });
+  // Data processing computed properties
+  private readonly categoryData = computed<ChartData>(() => {
+    return this.processSubscriptionsByCategory();
+  });
+
+  private readonly monthlyData = computed<MonthlyData>(() => {
+    return this.processSubscriptionsByMonth();
+  });
+
+  private readonly topCostlyData = computed<ChartData>(() => {
+    return this.processTopCostlySubscriptions();
+  });
+
+  private readonly billingCycleData = computed<ChartData>(() => {
+    return this.processBillingCycleDistribution();
+  });
+
+  // Chart options computed properties
+  readonly pieChartOptions = computed<PieChartOptions>(() => {
+    return this.createPieChartOptions();
+  });
+
+  readonly barChartOptions = computed<BarChartOptions>(() => {
+    return this.createMonthlyBarChartOptions();
+  });
+
+  readonly topCostlyChartOptions = computed<BarChartOptions>(() => {
+    return this.createTopCostlyBarChartOptions();
+  });
+
+  readonly billingCycleChartOptions = computed<BarChartOptions>(() => {
+    return this.createBillingCycleBarChartOptions();
+  });
+
+  // Data processing methods
+  private processSubscriptionsByCategory(): ChartData {
+    const subscriptions = this.subscriptions();
+    const categoryMap = this.groupByCategoryAndSum(subscriptions);
 
     return {
       labels: Array.from(categoryMap.keys()),
       series: Array.from(categoryMap.values()),
     };
-  });
+  }
 
-  // Computed property for pie chart options
-  protected pieChartOptions = computed<PieChartOptions>(() => {
+  private processSubscriptionsByMonth(): MonthlyData {
+    const subscriptions = this.subscriptions();
+    const monthlyMap = this.groupByMonthAndSum(subscriptions);
+    const sortedEntries = this.sortEntriesByMonth(monthlyMap);
+
+    return {
+      labels: sortedEntries.map(([monthYear]) => monthYear),
+      series: sortedEntries.map(([, cost]) => parseFloat(cost.toFixed(2))),
+      sortedEntries,
+    };
+  }
+
+  private processTopCostlySubscriptions(): ChartData {
+    const subscriptions = [...this.subscriptions()];
+    const topSubscriptions = subscriptions
+      .sort((a, b) => b.cost - a.cost)
+      .slice(0, CHART_CONFIG.TOP_SUBSCRIPTIONS_LIMIT);
+
+    return {
+      labels: topSubscriptions.map((sub) => sub.serviceName),
+      series: topSubscriptions.map((sub) => sub.cost),
+    };
+  }
+
+  private processBillingCycleDistribution(): ChartData {
+    const subscriptions = this.subscriptions();
+    const cycleMap = this.groupByCycleAndSum(subscriptions);
+
+    return {
+      labels: Array.from(cycleMap.keys()).map(this.formatBillingCycleLabel),
+      series: Array.from(cycleMap.values()).map((cost) => parseFloat(cost.toFixed(2))),
+    };
+  }
+
+  // Utility methods for data grouping
+  private groupByCategoryAndSum(subscriptions: Subscription[]): Map<string, number> {
+    const categoryMap = new Map<string, number>();
+
+    subscriptions.forEach((sub) => {
+      const currentSum = categoryMap.get(sub.category) || 0;
+      categoryMap.set(sub.category, currentSum + sub.cost);
+    });
+
+    return categoryMap;
+  }
+
+  private groupByMonthAndSum(subscriptions: Subscription[]): Map<string, number> {
+    const monthlyMap = new Map<string, number>();
+
+    subscriptions.forEach((sub) => {
+      if (sub.nextPaymentDate) {
+        const monthYear = this.formatDateToMonthYear(new Date(sub.nextPaymentDate));
+        const currentSum = monthlyMap.get(monthYear) || 0;
+        monthlyMap.set(monthYear, currentSum + sub.cost);
+      }
+    });
+
+    return monthlyMap;
+  }
+
+  private groupByCycleAndSum(subscriptions: Subscription[]): Map<string, number> {
+    const cycleMap = new Map<string, number>();
+
+    subscriptions.forEach((sub) => {
+      const currentSum = cycleMap.get(sub.billingCycle) || 0;
+      cycleMap.set(sub.billingCycle, currentSum + sub.cost);
+    });
+
+    return cycleMap;
+  }
+
+  // Chart creation methods
+  private createPieChartOptions(): PieChartOptions {
     const { labels, series } = this.categoryData();
 
     return {
       series,
       chart: {
-        width: 380,
+        width: CHART_CONFIG.PIE_WIDTH,
         type: 'pie',
       },
       labels,
       responsive: [
         {
-          breakpoint: 480,
+          breakpoint: CHART_CONFIG.MOBILE_BREAKPOINT,
           options: {
             chart: {
-              width: 200,
+              width: CHART_CONFIG.PIE_WIDTH_MOBILE,
             },
             legend: {
               position: 'bottom',
@@ -80,183 +169,98 @@ export class SpendingOverview {
       ],
       tooltip: {
         y: {
-          formatter: function (val) {
-            return `$${val.toFixed(2)}`;
-          },
+          formatter: CURRENCY_FORMATTER.format,
         },
       },
     };
-  });
+  }
 
-  // Computed property to group subscriptions by month from nextPaymentDate
-  private monthlyData = computed(() => {
-    const subscriptions = this.subscriptions();
-    const monthlyMap = new Map<string, number>();
-
-    // Group by month-year and sum costs
-    subscriptions.forEach((sub) => {
-      if (sub.nextPaymentDate) {
-        const date = new Date(sub.nextPaymentDate);
-        const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        const currentSum = monthlyMap.get(monthYear) || 0;
-        monthlyMap.set(monthYear, currentSum + sub.cost);
-      }
-    });
-
-    // Sort by month-year
-    const sortedEntries = Array.from(monthlyMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-
-    return {
-      labels: sortedEntries.map(([monthYear]) => monthYear),
-      series: sortedEntries.map(([, cost]) => cost.toFixed(2)).map((cost) => parseFloat(cost)),
-    };
-  });
-
-  barChartOptions = computed<BarChartOptions>(() => {
+  private createMonthlyBarChartOptions(): BarChartOptions {
     const { labels, series } = this.monthlyData();
-    return {
-      series: [
-        {
-          name: 'Total Cost',
-          data: series,
-        },
-      ],
-      chart: {
-        type: 'bar',
-        height: 350,
-      },
-      plotOptions: {
-        bar: {
-          horizontal: true,
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        formatter: function (val: string | number | number[]) {
-          const numVal = typeof val === 'number' ? val : Number(val);
-          return `$${numVal.toFixed(2)}`;
-        },
-      },
-      xaxis: {
-        categories: labels,
-      },
-      tooltip: {
-        y: {
-          formatter: function (val) {
-            return `$${val.toFixed(2)}`;
-          },
-        },
-      },
-    };
-  });
 
-  // Computed property for top costly subscriptions
-  private topCostlyData = computed(() => {
-    const subscriptions = this.subscriptions();
+    return this.createBarChartBase({
+      seriesName: 'Total Cost',
+      data: series,
+      categories: labels,
+      horizontal: true,
+    });
+  }
 
-    // Sort by cost descending and take top 5
-    const topSubscriptions = subscriptions.sort((a, b) => b.cost - a.cost).slice(0, 5);
-
-    return {
-      labels: topSubscriptions.map((sub) => sub.serviceName),
-      series: topSubscriptions.map((sub) => sub.cost),
-    };
-  });
-
-  protected topCostlyChartOptions = computed<BarChartOptions>(() => {
+  private createTopCostlyBarChartOptions(): BarChartOptions {
     const { labels, series } = this.topCostlyData();
 
-    return {
-      series: [
-        {
-          name: 'Cost',
-          data: series,
-        },
-      ],
-      chart: {
-        type: 'bar',
-        height: 350,
-      },
-      plotOptions: {
-        bar: {
-          horizontal: true,
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        formatter: function (val: string | number | number[]) {
-          const numVal = typeof val === 'number' ? val : Number(val);
-          return `$${numVal.toFixed(2)}`;
-        },
-      },
-      xaxis: {
-        categories: labels,
-      },
-      tooltip: {
-        y: {
-          formatter: function (val) {
-            return `$${val.toFixed(2)}`;
-          },
-        },
-      },
-    };
-  });
-
-  // Computed property for billing cycle cost distribution
-  private billingCycleData = computed(() => {
-    const subscriptions = this.subscriptions();
-    const cycleMap = new Map<string, number>();
-
-    // Group by billing cycle and sum costs
-    subscriptions.forEach((sub) => {
-      const currentSum = cycleMap.get(sub.billingCycle) || 0;
-      cycleMap.set(sub.billingCycle, currentSum + sub.cost);
+    return this.createBarChartBase({
+      seriesName: 'Cost',
+      data: series,
+      categories: labels,
+      horizontal: true,
     });
+  }
 
-    return {
-      labels: Array.from(cycleMap.keys()).map((cycle) =>
-        cycle === 'monthly' ? 'Monthly' : 'Yearly',
-      ),
-      series: Array.from(cycleMap.values()).map((cost) => parseFloat(cost.toFixed(2))),
-    };
-  });
-
-  protected billingCycleChartOptions = computed<BarChartOptions>(() => {
+  private createBillingCycleBarChartOptions(): BarChartOptions {
     const { labels, series } = this.billingCycleData();
 
+    return this.createBarChartBase({
+      seriesName: 'Total Cost',
+      data: series,
+      categories: labels,
+      horizontal: false,
+    });
+  }
+
+  // Base chart creation method
+  private createBarChartBase(config: {
+    seriesName: string;
+    data: number[];
+    categories: string[];
+    horizontal: boolean;
+  }): BarChartOptions {
     return {
       series: [
         {
-          name: 'Total Cost',
-          data: series,
+          name: config.seriesName,
+          data: config.data,
         },
       ],
       chart: {
         type: 'bar',
-        height: 350,
+        height: CHART_CONFIG.BAR_HEIGHT,
       },
       plotOptions: {
         bar: {
-          horizontal: false,
+          horizontal: config.horizontal,
         },
-      },
-      xaxis: {
-        categories: labels,
       },
       dataLabels: {
         enabled: true,
-        formatter: function (val: string | number | number[]) {
-          const numVal = typeof val === 'number' ? val : Number(val);
-          return `$${numVal.toFixed(2)}`;
+        formatter: (val: string | number | number[]) => {
+          const numVal = CURRENCY_FORMATTER.parseValue(val);
+          return CURRENCY_FORMATTER.format(numVal);
         },
+      },
+      xaxis: {
+        categories: config.categories,
       },
       tooltip: {
         y: {
-          formatter: function (val) {
-            return `$${val.toFixed(2)}`;
-          },
+          formatter: CURRENCY_FORMATTER.format,
         },
       },
     };
-  });
+  }
+
+  // Helper formatting methods
+  private formatDateToMonthYear(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  }
+
+  private formatBillingCycleLabel(cycle: string): string {
+    return cycle === 'monthly' ? 'Monthly' : 'Yearly';
+  }
+
+  private sortEntriesByMonth(monthlyMap: Map<string, number>): Array<[string, number]> {
+    return Array.from(monthlyMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  }
 }
