@@ -222,9 +222,16 @@ export class SubscriptionsData {
     const storedSubscriptions = this.localStorageApi.getItems<Subscription>('subscriptions');
 
     if (storedSubscriptions.length > 0) {
-      this.$subscriptions.set(storedSubscriptions);
+      // Convert stored date strings back to Date objects
+      const subscriptionsWithDates = storedSubscriptions.map((sub) => ({
+        ...sub,
+        nextPaymentDate: new Date(sub.nextPaymentDate),
+      }));
+      this.$subscriptions.set(subscriptionsWithDates);
     } else {
       this.$subscriptions.set(initialSubscriptions);
+      // Save initial data to localStorage
+      this.localStorageApi.setItems('subscriptions', initialSubscriptions);
     }
   }
 
