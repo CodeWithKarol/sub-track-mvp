@@ -69,3 +69,24 @@ export const billingCycles = [
     viewValue: 'Yearly',
   },
 ] as const;
+
+export const displayedColumns = [
+  'serviceName',
+  'cost',
+  'nextPaymentDate',
+  'billingCycle',
+  'category',
+  'actions',
+] as const;
+
+export interface DateRange {
+  start: Date | null;
+  end: Date | null;
+}
+
+export interface FilterState {
+  searchTerm: string;
+  category: string;
+  billingCycle: string;
+  dateRange: DateRange;
+}
