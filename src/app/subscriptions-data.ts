@@ -211,9 +211,10 @@ const initialSubscriptions: Subscription[] = [
 })
 export class SubscriptionsData {
   private readonly localStorageApi = inject(LocalStorageApi);
-  $subscriptions = signal<Subscription[]>([]);
+  private _subscriptions = signal<Subscription[]>([]);
+  $subscriptions = this._subscriptions.asReadonly();
   $totalCost = computed(() => {
-    return this.$subscriptions().reduce((total, subscription) => {
+    return this._subscriptions().reduce((total, subscription) => {
       return total + subscription.cost;
     }, 0);
   });
@@ -227,9 +228,9 @@ export class SubscriptionsData {
         ...sub,
         nextPaymentDate: new Date(sub.nextPaymentDate),
       }));
-      this.$subscriptions.set(subscriptionsWithDates);
+      this._subscriptions.set(subscriptionsWithDates);
     } else {
-      this.$subscriptions.set(initialSubscriptions);
+      this._subscriptions.set(initialSubscriptions);
       // Save initial data to localStorage
       this.localStorageApi.setItems('subscriptions', initialSubscriptions);
     }
@@ -251,7 +252,7 @@ export class SubscriptionsData {
     return daysUntilDue >= 0 && daysUntilDue <= 7;
   }
   $dueSubscriptions = computed(() => {
-    return this.$subscriptions().filter((subscription) => this.isNearDue(subscription));
+    return this._subscriptions().filter((subscription) => this.isNearDue(subscription));
   });
 
   $numOfDueSubscriptions = computed(() => this.$dueSubscriptions().length);
@@ -262,14 +263,14 @@ export class SubscriptionsData {
       id: `sub${Math.random().toString(36).substring(2, 9)}`,
     };
 
-    this.$subscriptions.update((subscriptions) => [...subscriptions, subscriptionWithId]);
+    this._subscriptions.update((subscriptions) => [...subscriptions, subscriptionWithId]);
 
     // Save to local storage
     this.localStorageApi.setItems('subscriptions', this.$subscriptions());
   }
 
   removeSubscription(id: string): void {
-    this.$subscriptions.update((subscriptions) =>
+    this._subscriptions.update((subscriptions) =>
       subscriptions.filter((subscription) => subscription.id !== id),
     );
 
@@ -278,7 +279,7 @@ export class SubscriptionsData {
   }
 
   updateSubscription(updatedSubscription: Subscription): void {
-    this.$subscriptions.update((subscriptions) =>
+    this._subscriptions.update((subscriptions) =>
       subscriptions.map((subscription) =>
         subscription.id === updatedSubscription.id ? updatedSubscription : subscription,
       ),

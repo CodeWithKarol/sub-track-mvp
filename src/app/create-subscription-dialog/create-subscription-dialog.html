@@ -55,7 +55,6 @@
     <mat-form-field appearance="outline">
       <mat-label>Billing Cycle</mat-label>
       <mat-select formControlName="billingCycle">
-        <mat-option></mat-option>
         @for (option of billingCycles; track option.value) {
           <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
         }
@@ -76,7 +75,6 @@
     <mat-form-field appearance="outline">
       <mat-label>Category</mat-label>
       <mat-select formControlName="category">
-        <mat-option></mat-option>
         @for (option of categories; track option.value) {
           <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
         }
