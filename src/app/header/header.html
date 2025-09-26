@@ -51,12 +51,12 @@
           <button
             mat-menu-item
             class="notification-item"
-            [attr.aria-label]="formatNotificationMessage(subscription)"
+            [attr.aria-label]="subscription | notificationMessage"
           >
             <div class="notification-content">
               <div class="notification-title">{{ subscription.serviceName }}</div>
               <div class="notification-details">
-                {{ getRelativeDate(subscription.nextPaymentDate) }} •
+                {{ subscription.nextPaymentDate | relativeDate }} •
                 {{ subscription.cost | currency }}
               </div>
             </div>

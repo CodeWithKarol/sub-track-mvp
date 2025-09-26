@@ -7,7 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CurrencyPipe } from '@angular/common';
 
 import { SubscriptionsData } from '../subscriptions-data';
-import type { Subscription } from '../subscription.model';
+import { RelativeDateFormatter } from '../relative-date-formatter';
+import { NotificationMessageFormatter } from '../notification-message-formatter';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +20,8 @@ import type { Subscription } from '../subscription.model';
     MatBadgeModule,
     MatMenuModule,
     CurrencyPipe,
+    RelativeDateFormatter,
+    NotificationMessageFormatter,
   ],
   templateUrl: './header.html',
   styleUrl: './header.scss',
@@ -50,24 +53,5 @@ export class Header {
   onNotificationMenuOpened(): void {
     // Future: Mark notifications as viewed
     console.log('Notification menu opened');
-  }
-
-  protected formatNotificationMessage(subscription: Subscription): string {
-    const date = subscription.nextPaymentDate;
-    const relativeDate = this.getRelativeDate(date);
-    return `${subscription.serviceName} • ${relativeDate} • ${subscription.cost | 0}`;
-  }
-
-  protected getRelativeDate(date: Date): string {
-    const today = new Date();
-    const targetDate = new Date(date);
-    const diffTime = targetDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return 'Due today';
-    if (diffDays === 1) return 'Due tomorrow';
-    if (diffDays === -1) return 'Due yesterday';
-    if (diffDays > 1) return `Due in ${diffDays} days`;
-    return `Overdue by ${Math.abs(diffDays)} days`;
   }
 }
