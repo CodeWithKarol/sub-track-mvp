@@ -156,3 +156,8 @@ export const DEFAULT_FORM_VALUES: CreateSubscriptionForm = {
   billingCycle: 'monthly',
   category: 'Entertainment',
 } as const;
+
+// Interface for dialog data
+export interface DeleteSubscriptionDialogData {
+  serviceName: string;
+}
