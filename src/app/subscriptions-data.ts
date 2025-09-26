@@ -236,7 +236,7 @@ export class SubscriptionsData {
     }
   }
 
-  isNearDue(subscription: Subscription): boolean {
+  private isNearDue(subscription: Subscription): boolean {
     const today = new Date();
     // Normalize today to start of day (remove time component)
     today.setHours(0, 0, 0, 0);
@@ -251,6 +251,7 @@ export class SubscriptionsData {
     // Return true if payment is due within 7 days (0-7 days, excluding overdue payments)
     return daysUntilDue >= 0 && daysUntilDue <= 7;
   }
+
   $dueSubscriptions = computed(() => {
     return this._subscriptions().filter((subscription) => this.isNearDue(subscription));
   });

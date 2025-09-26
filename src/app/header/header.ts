@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,14 +27,16 @@ export class Header {
   private readonly subscriptionsData = inject(SubscriptionsData);
 
   // Computed signals for reactive data
-  protected readonly $dueSubscriptions = this.subscriptionsData.$dueSubscriptions;
-  protected readonly $numOfDueSubscriptions = this.subscriptionsData.$numOfDueSubscriptions;
+  protected $dueSubscriptions = computed(() => this.subscriptionsData.$dueSubscriptions());
+  protected $numOfDueSubscriptions = computed(() =>
+    this.subscriptionsData.$numOfDueSubscriptions(),
+  );
 
   // Computed for notification badge state
-  protected readonly $hasNotifications = computed(() => this.$numOfDueSubscriptions() > 0);
+  protected $hasNotifications = computed(() => this.$numOfDueSubscriptions() > 0);
 
   // Computed for notification badge display text
-  protected readonly $notificationBadgeText = computed(() => {
+  protected $notificationBadgeText = computed(() => {
     const count = this.$numOfDueSubscriptions();
     return count > 99 ? '99+' : count.toString();
   });
@@ -50,10 +52,7 @@ export class Header {
     console.log('Notification menu opened');
   }
 
-  // Template utility methods
-  trackBySubscriptionId = (index: number, subscription: Subscription): string => subscription.id;
-
-  formatNotificationMessage(subscription: Subscription): string {
+  protected formatNotificationMessage(subscription: Subscription): string {
     const date = subscription.nextPaymentDate;
     const relativeDate = this.getRelativeDate(date);
     return `${subscription.serviceName} • ${relativeDate} • ${subscription.cost | 0}`;

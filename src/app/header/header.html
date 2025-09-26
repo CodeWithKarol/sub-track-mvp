@@ -7,7 +7,7 @@
         (click)="onBrandClick()"
         aria-label="SubTrack home"
       >
-        <mat-icon aria-hidden="true">wallet</mat-icon>
+        <mat-icon aria-hidden="false">wallet</mat-icon>
       </button>
       <div class="brand-content">
         <h1 class="brand-title">SubTrack</h1>
@@ -34,7 +34,7 @@
           [matBadge]="$notificationBadgeText()"
           matBadgeColor="accent"
           [matBadgeHidden]="!$hasNotifications()"
-          aria-hidden="true"
+          aria-hidden="false"
         >
           notifications
         </mat-icon>
@@ -46,10 +46,8 @@
         <div class="menu-header" role="heading" aria-level="2">
           Due Subscriptions ({{ $numOfDueSubscriptions() }})
         </div>
-        @for (
-          subscription of $dueSubscriptions();
-          track trackBySubscriptionId($index, subscription)
-        ) {
+        @for (subscription of $dueSubscriptions();
+          track subscription.id) {
           <button
             mat-menu-item
             class="notification-item"
