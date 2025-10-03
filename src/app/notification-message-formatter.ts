@@ -11,6 +11,6 @@ export class NotificationMessageFormatter implements PipeTransform {
 
   transform(subscription: Subscription): string {
     const relativeDate = this.relativeDateFormatter.transform(subscription.nextPaymentDate);
-    return `${subscription.serviceName} • ${relativeDate} • ${subscription.cost | 0}`;
+    return `${subscription.serviceName} • ${relativeDate} • $${subscription.cost.toFixed(2)}`;
   }
 }
