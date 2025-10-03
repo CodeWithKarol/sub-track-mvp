@@ -1,0 +1,263 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header-toolbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0 20px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-icon {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  mat-icon {
+    font-size: 24px;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.brand-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.brand-slogan {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+}
+
+.header-spacer {
+  flex: 1 1 auto;
+}
+
+.actions-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-button {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not([disabled]) {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &[disabled] {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+  }
+
+  mat-icon {
+    font-size: 24px;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Badge styling
+  ::ng-deep .mat-badge-content {
+    background: #ff4757;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Menu styling
+::ng-deep .notification-menu {
+  .mat-mdc-menu-content {
+    padding: 0;
+    max-width: 350px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e9ecef;
+  }
+}
+
+.menu-header {
+  padding: 20px 24px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.notification-item {
+  padding: 16px 20px !important;
+  height: auto !important;
+  min-height: 60px;
+  border-bottom: 1px solid #f8f9fa;
+  transition: background-color 0.2s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.05) 0%,
+      rgba(118, 75, 162, 0.05) 100%
+    );
+  }
+
+  .notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    text-align: left;
+  }
+
+  .notification-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2c3e50;
+    line-height: 1.2;
+  }
+
+  .notification-details {
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.2;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .header-toolbar {
+    padding: 0 16px;
+    min-height: 56px;
+  }
+
+  .brand-title {
+    font-size: 1.3rem;
+  }
+
+  .brand-icon,
+  .notification-button {
+    mat-icon {
+      font-size: 22px;
+    }
+  }
+
+  ::ng-deep .notification-menu {
+    .mat-mdc-menu-content {
+      max-width: 300px;
+    }
+  }
+
+  .notification-item {
+    padding: 12px 16px !important;
+    min-height: 50px;
+
+    .notification-title {
+      font-size: 0.9rem;
+    }
+
+    .notification-details {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header-toolbar {
+    padding: 0 12px;
+    gap: 12px;
+  }
+
+  .brand-section {
+    gap: 8px;
+  }
+
+  .brand-title {
+    font-size: 1.2rem;
+  }
+
+  ::ng-deep .notification-menu {
+    .mat-mdc-menu-content {
+      max-width: 280px;
+    }
+  }
+}

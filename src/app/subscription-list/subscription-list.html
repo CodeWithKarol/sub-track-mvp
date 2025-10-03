@@ -1,0 +1,109 @@
+<section class="subscription-list-container">
+  <section class="subscription-list">
+    <h1>Your Subscriptions</h1>
+
+    <section class="summary">
+      <p>
+        Total Monthly Cost: <b>{{ $totalCost() | currency }}</b>
+      </p>
+      <button matButton="filled" (click)="createSubscription()">+ Add Subscription</button>
+    </section>
+
+    <section class="filter-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Filter by Service Name</mat-label>
+        <input matInput [(ngModel)]="searchTerm" placeholder="Ex. Netflix"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Filter by Category</mat-label>
+        <mat-select [(value)]="selectedCategory">
+          <mat-option></mat-option>
+          @for (option of categories; track option) {
+            <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Filter by Billing Cycle</mat-label>
+        <mat-select [(value)]="selectedBillingCycle">
+          <mat-option></mat-option>
+          @for (option of billingCycles; track option) {
+            <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Start date" [(ngModel)]="selectedStartDate"/>
+          <input matEndDate placeholder="End date" [(ngModel)]="selectedEndDate"/>
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </section>
+
+    <table mat-table [dataSource]="$dataSource()" matSort>
+      <ng-container matColumnDef="serviceName">
+        <th mat-header-cell *matHeaderCellDef>Service Name</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.serviceName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Cost</th>
+        <td mat-cell *matCellDef="let element">{{ element.cost | currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nextPaymentDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.nextPaymentDate | date: 'shortDate' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="billingCycle">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Billing Cycle</th>
+        <td mat-cell *matCellDef="let element">{{ element.billingCycle | titlecase }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+        <td mat-cell *matCellDef="let element">{{ element.category | titlecase }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="updateSubscription(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteSubscription(element)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="6">
+          <h4 class="no-data-message">No data matching the filter.</h4>
+        </td>
+      </tr>
+    </table>
+
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </section>
+</section>
+
+<app-spending-overview [subscriptions]="$subscriptions()"/>

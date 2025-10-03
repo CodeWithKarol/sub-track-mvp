@@ -1,0 +1,73 @@
+<header class="app-header" role="banner">
+  <mat-toolbar class="header-toolbar">
+    <div class="brand-section">
+      <button
+        mat-icon-button
+        class="brand-icon"
+        (click)="onBrandClick()"
+        aria-label="SubTrack home"
+      >
+        <mat-icon aria-hidden="false">wallet</mat-icon>
+      </button>
+      <div class="brand-content">
+        <h1 class="brand-title">SubTrack</h1>
+        <span class="brand-slogan">Track your subscriptions, save your money</span>
+      </div>
+    </div>
+
+    <div class="header-spacer"></div>
+
+    <nav class="actions-section" role="navigation" aria-label="Header actions">
+      <button
+        mat-icon-button
+        class="notification-button"
+        [disabled]="!$hasNotifications()"
+        [matMenuTriggerFor]="notificationMenu"
+        (menuOpened)="onNotificationMenuOpened()"
+        [attr.aria-label]="
+          $hasNotifications()
+            ? 'View ' + $numOfDueSubscriptions() + ' due subscriptions'
+            : 'No due subscriptions'
+        "
+      >
+        <mat-icon
+          [matBadge]="$notificationBadgeText()"
+          matBadgeColor="accent"
+          [matBadgeHidden]="!$hasNotifications()"
+          aria-hidden="false"
+        >
+          notifications
+        </mat-icon>
+      </button>
+    </nav>
+
+    <mat-menu #notificationMenu="matMenu" class="notification-menu" [hasBackdrop]="true">
+      @if ($hasNotifications()) {
+        <div class="menu-header" role="heading" aria-level="2">
+          Due Subscriptions ({{ $numOfDueSubscriptions() }})
+        </div>
+        @for (subscription of $dueSubscriptions();
+          track subscription.id) {
+          <button
+            mat-menu-item
+            class="notification-item"
+            [attr.aria-label]="subscription | notificationMessage"
+          >
+            <div class="notification-content">
+              <div class="notification-title">{{ subscription.serviceName }}</div>
+              <div class="notification-details">
+                {{ subscription.nextPaymentDate | relativeDate }} •
+                {{ subscription.cost | currency }}
+              </div>
+            </div>
+          </button>
+        }
+      } @else {
+        <div class="menu-empty" role="status">
+          <mat-icon>check_circle</mat-icon>
+          <span>No subscriptions due</span>
+        </div>
+      }
+    </mat-menu>
+  </mat-toolbar>
+</header>
