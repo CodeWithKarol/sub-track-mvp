@@ -104,6 +104,14 @@
 }
 
 // Table styling
+.desktop-table-container {
+  display: block;
+}
+
+.mobile-cards-container {
+  display: none;
+}
+
 table.mat-mdc-table {
   background: white;
   border-radius: 12px;
@@ -186,6 +194,133 @@ table.mat-mdc-table {
   }
 }
 
+// Mobile card styling
+.subscription-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f8f9fa;
+
+    .service-name {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+
+    .cost {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .card-content {
+    margin-bottom: 16px;
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .label {
+        font-weight: 600;
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+
+      .value {
+        font-weight: 500;
+        color: #495057;
+        text-transform: capitalize;
+      }
+    }
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+
+    button {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 500;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.2s ease;
+
+      mat-icon {
+        font-size: 18px;
+      }
+
+      &:first-child {
+        border-color: #667eea;
+        color: #667eea;
+
+        &:hover {
+          background-color: #667eea;
+          color: white;
+        }
+      }
+
+      &:last-child {
+        &:hover {
+          background-color: #dc3545;
+          color: white;
+          border-color: #dc3545;
+        }
+      }
+    }
+  }
+}
+
+.no-data-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+
+  .no-data-message {
+    margin: 0;
+    color: #6c757d;
+    font-style: italic;
+    font-weight: 500;
+  }
+}
+
 // Paginator styling
 mat-paginator {
   background: white;
@@ -251,18 +386,61 @@ mat-paginator {
     }
   }
 
-  // Table responsive adjustments
-  table.mat-mdc-table {
-    font-size: 0.9rem;
+  // Hide table and show cards on mobile
+  .desktop-table-container {
+    display: none;
+  }
 
-    .mat-mdc-header-cell,
-    .mat-mdc-cell {
-      padding: 8px 4px;
-      font-size: 0.85rem;
+  .mobile-cards-container {
+    display: block;
+  }
+
+  // Mobile card responsive adjustments
+  .subscription-card {
+    padding: 16px;
+    margin-bottom: 12px;
+
+    .card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      text-align: left;
+
+      .service-name {
+        font-size: 1.2rem;
+      }
+
+      .cost {
+        font-size: 1.3rem;
+        align-self: flex-end;
+      }
     }
 
-    .mat-mdc-header-cell {
-      font-size: 0.8rem;
+    .card-content {
+      .detail-row {
+        margin-bottom: 8px;
+
+        .label {
+          font-size: 0.85rem;
+        }
+
+        .value {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .card-actions {
+      gap: 8px;
+
+      button {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+
+        mat-icon {
+          font-size: 16px;
+        }
+      }
     }
   }
 }
@@ -311,27 +489,67 @@ mat-paginator {
     gap: 10px;
   }
 
-  // Table mobile adjustments
-  table.mat-mdc-table {
-    .mat-mdc-header-cell,
-    .mat-mdc-cell {
-      padding: 6px 2px;
-      font-size: 0.8rem;
+  // Ensure cards are still shown on very small screens
+  .desktop-table-container {
+    display: none;
+  }
+
+  .mobile-cards-container {
+    display: block;
+  }
+
+  // Extra small mobile adjustments
+  .subscription-card {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+
+    .card-header {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+
+      .service-name {
+        font-size: 1.1rem;
+      }
+
+      .cost {
+        font-size: 1.2rem;
+      }
     }
 
-    .mat-mdc-header-cell {
-      font-size: 0.75rem;
-    }
+    .card-content {
+      margin-bottom: 12px;
 
-    .mat-mdc-row .mat-mdc-cell:last-child {
-      button {
-        padding: 4px;
-        margin: 0 2px;
+      .detail-row {
+        margin-bottom: 6px;
 
-        mat-icon {
-          font-size: 18px;
+        .label {
+          font-size: 0.8rem;
+        }
+
+        .value {
+          font-size: 0.85rem;
         }
       }
+    }
+
+    .card-actions {
+      button {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+
+        mat-icon {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .no-data-card {
+    padding: 30px 16px;
+
+    .no-data-message {
+      font-size: 0.9rem;
     }
   }
 }
