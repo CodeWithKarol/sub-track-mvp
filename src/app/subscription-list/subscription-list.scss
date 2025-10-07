@@ -195,129 +195,140 @@ table.mat-mdc-table {
 }
 
 // Mobile card styling
-.subscription-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9ecef;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.mobile-cards-container {
+  .subscription-card {
     margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #f8f9fa;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    border-radius: 12px;
+    overflow: hidden;
 
-    .service-name {
-      margin: 0;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #2c3e50;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     }
 
-    .cost {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #667eea;
+    .mat-mdc-card-header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-  }
-
-  .card-content {
-    margin-bottom: 16px;
-
-    .detail-row {
+      color: white;
+      padding: 16px 24px;
       display: flex;
+      flex-direction: row;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
 
-      &:last-child {
-        margin-bottom: 0;
+      .mat-mdc-card-header-text {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0;
       }
 
-      .label {
-        font-weight: 600;
-        color: #6c757d;
-        font-size: 0.9rem;
+      .mat-mdc-card-title {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: white;
+        flex: 1;
       }
 
-      .value {
-        font-weight: 500;
-        color: #495057;
-        text-transform: capitalize;
+      .mat-mdc-card-subtitle {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: left;
+        flex-shrink: 0;
       }
     }
-  }
 
-  .card-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: space-between;
+    .mat-mdc-card-content {
+      padding: 20px 24px;
 
-    button {
-      flex: 1;
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .label {
+          font-weight: 600;
+          color: #6c757d;
+          font-size: 0.9rem;
+        }
+
+        .value {
+          font-weight: 500;
+          color: #495057;
+          text-transform: capitalize;
+        }
+      }
+    }
+
+    .mat-mdc-card-actions {
+      padding: 16px 24px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-weight: 500;
-      border-radius: 8px;
-      padding: 12px 16px;
-      transition: all 0.2s ease;
+      gap: 12px;
+      justify-content: space-between;
 
-      mat-icon {
-        font-size: 18px;
-      }
+      button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 12px 16px;
+        transition: all 0.2s ease;
 
-      &:first-child {
-        border-color: #667eea;
-        color: #667eea;
-
-        &:hover {
-          background-color: #667eea;
-          color: white;
+        mat-icon {
+          font-size: 18px;
         }
-      }
 
-      &:last-child {
-        &:hover {
-          background-color: #dc3545;
-          color: white;
-          border-color: #dc3545;
+        &:first-child {
+          border-color: #667eea;
+          color: #667eea;
+
+          &:hover {
+            background-color: #667eea;
+            color: white;
+          }
+        }
+
+        &:last-child {
+          &:hover {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+          }
         }
       }
     }
   }
-}
 
-.no-data-card {
-  background: white;
-  border-radius: 12px;
-  padding: 40px 20px;
-  text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e9ecef;
+  .no-data-card {
+    margin-bottom: 16px;
+    border-radius: 12px;
 
-  .no-data-message {
-    margin: 0;
-    color: #6c757d;
-    font-style: italic;
-    font-weight: 500;
+    .mat-mdc-card-content {
+      text-align: center;
+      padding: 40px 20px;
+
+      .no-data-message {
+        margin: 0;
+        color: #6c757d;
+        font-style: italic;
+        font-weight: 500;
+      }
+    }
   }
 }
 
@@ -396,49 +407,54 @@ mat-paginator {
   }
 
   // Mobile card responsive adjustments
-  .subscription-card {
-    padding: 16px;
-    margin-bottom: 12px;
+  .mobile-cards-container {
+    .subscription-card {
+      margin-bottom: 12px;
 
-    .card-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      text-align: left;
+      .mat-mdc-card-header {
+        padding: 12px 20px;
 
-      .service-name {
-        font-size: 1.2rem;
-      }
-
-      .cost {
-        font-size: 1.3rem;
-        align-self: flex-end;
-      }
-    }
-
-    .card-content {
-      .detail-row {
-        margin-bottom: 8px;
-
-        .label {
-          font-size: 0.85rem;
+        .mat-mdc-card-header-text {
+          flex-direction: row;
+          align-items: center;
         }
 
-        .value {
+        .mat-mdc-card-title {
+          font-size: 1.2rem;
+        }
+
+        .mat-mdc-card-subtitle {
+          font-size: 1.3rem;
+        }
+      }
+
+      .mat-mdc-card-content {
+        padding: 16px 20px;
+
+        .detail-row {
+          margin-bottom: 8px;
+
+          .label {
+            font-size: 0.85rem;
+          }
+
+          .value {
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .mat-mdc-card-actions {
+        padding: 12px 20px;
+        gap: 8px;
+
+        button {
+          padding: 10px 12px;
           font-size: 0.9rem;
-        }
-      }
-    }
 
-    .card-actions {
-      gap: 8px;
-
-      button {
-        padding: 10px 12px;
-        font-size: 0.9rem;
-
-        mat-icon {
-          font-size: 16px;
+          mat-icon {
+            font-size: 16px;
+          }
         }
       }
     }
@@ -499,57 +515,70 @@ mat-paginator {
   }
 
   // Extra small mobile adjustments
-  .subscription-card {
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
+  .mobile-cards-container {
+    .subscription-card {
+      margin-bottom: 10px;
+      border-radius: 8px;
 
-    .card-header {
-      margin-bottom: 12px;
-      padding-bottom: 8px;
+      .mat-mdc-card-header {
+        padding: 10px 16px;
 
-      .service-name {
-        font-size: 1.1rem;
-      }
-
-      .cost {
-        font-size: 1.2rem;
-      }
-    }
-
-    .card-content {
-      margin-bottom: 12px;
-
-      .detail-row {
-        margin-bottom: 6px;
-
-        .label {
-          font-size: 0.8rem;
+        .mat-mdc-card-header-text {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
         }
 
-        .value {
+        .mat-mdc-card-title {
+          font-size: 1.1rem;
+          width: 100%;
+        }
+
+        .mat-mdc-card-subtitle {
+          font-size: 1.2rem;
+          text-align: left;
+          width: 100%;
+        }
+      }
+
+      .mat-mdc-card-content {
+        padding: 12px 16px;
+
+        .detail-row {
+          margin-bottom: 6px;
+
+          .label {
+            font-size: 0.8rem;
+          }
+
+          .value {
+            font-size: 0.85rem;
+          }
+        }
+      }
+
+      .mat-mdc-card-actions {
+        padding: 10px 16px;
+
+        button {
+          padding: 8px 10px;
           font-size: 0.85rem;
+
+          mat-icon {
+            font-size: 14px;
+          }
         }
       }
     }
 
-    .card-actions {
-      button {
-        padding: 8px 10px;
-        font-size: 0.85rem;
+    .no-data-card {
+      .mat-mdc-card-content {
+        padding: 30px 16px;
 
-        mat-icon {
-          font-size: 14px;
+        .no-data-message {
+          font-size: 0.9rem;
         }
       }
-    }
-  }
-
-  .no-data-card {
-    padding: 30px 16px;
-
-    .no-data-message {
-      font-size: 0.9rem;
     }
   }
 }

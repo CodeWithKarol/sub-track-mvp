@@ -111,13 +111,13 @@
     <div class="mobile-cards-container">
       @if ($filteredSubscriptions().length > 0) {
         @for (subscription of $filteredSubscriptions(); track subscription.id) {
-          <div class="subscription-card">
-            <div class="card-header">
-              <h3 class="service-name">{{ subscription.serviceName }}</h3>
-              <div class="cost">{{ subscription.cost | currency }}</div>
-            </div>
+          <mat-card class="subscription-card">
+            <mat-card-header>
+              <mat-card-title class="service-name">{{ subscription.serviceName }}</mat-card-title>
+              <mat-card-subtitle class="cost">{{ subscription.cost | currency }}</mat-card-subtitle>
+            </mat-card-header>
 
-            <div class="card-content">
+            <mat-card-content>
               <div class="detail-row">
                 <span class="label">Next Payment:</span>
                 <span class="value">{{ subscription.nextPaymentDate | date: 'shortDate' }}</span>
@@ -132,9 +132,9 @@
                 <span class="label">Category:</span>
                 <span class="value">{{ subscription.category | titlecase }}</span>
               </div>
-            </div>
+            </mat-card-content>
 
-            <div class="card-actions">
+            <mat-card-actions align="end">
               <button mat-stroked-button (click)="updateSubscription(subscription)">
                 <mat-icon>edit</mat-icon>
                 Edit
@@ -143,13 +143,15 @@
                 <mat-icon>delete</mat-icon>
                 Delete
               </button>
-            </div>
-          </div>
+            </mat-card-actions>
+          </mat-card>
         }
       } @else {
-        <div class="no-data-card">
-          <h4 class="no-data-message">No data matching the filter.</h4>
-        </div>
+        <mat-card class="no-data-card">
+          <mat-card-content>
+            <h4 class="no-data-message">No data matching the filter.</h4>
+          </mat-card-content>
+        </mat-card>
       }
     </div>
   </section>
